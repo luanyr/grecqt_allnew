@@ -6,7 +6,7 @@ ContentUI::ContentUI(QWidget *parent) :
     ui(new Ui::ContentUI)
 {
     ui->setupUi(this);
-    this->resize(1200, 600);
+    this->resize(1500, 600);
 
     TW_init();
     FileView_init();
@@ -71,7 +71,7 @@ void ContentUI::FileView_init()
 
     TB_liststatus = new QTextBrowser(this);
     TB_liststatus->resize(160, 500);
-    TB_liststatus->move(1200, 500);
+    TB_liststatus->move(1200, 20);
 }
 
 void ContentUI::ListShowStatus(QString msg)

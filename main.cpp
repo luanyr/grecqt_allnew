@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 //    Top_Form tf;
 //    tf.show();
     MainUI mu;
+    a.setActiveWindow(&mu);
     mu.show();
     return a.exec();
 }
