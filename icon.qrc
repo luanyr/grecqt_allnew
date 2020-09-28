@@ -1,0 +1,62 @@
+<RCC>
+    <qresource prefix="/ico">
+        <file>icon/alive.ico</file>
+        <file>icon/dead.ico</file>
+        <file>icon/err.ico</file>
+        <file>icon/file.ico</file>
+        <file>icon/unknown.ico</file>
+        <file>png/blue.png</file>
+        <file>png/geo_fence-128.png</file>
+    </qresource>
+    <qresource prefix="/png">
+        <file>png/burn.png</file>
+        <file>png/cloud_storage-128.png</file>
+        <file>png/coins-128.png</file>
+        <file>png/connected-128.png</file>
+        <file>png/delete-128.png</file>
+        <file>png/deluser.png</file>
+        <file>png/disconnected-128.png</file>
+        <file>png/document-128.png</file>
+        <file>png/download-128.png</file>
+        <file>png/green.png</file>
+        <file>png/ledblue.png</file>
+        <file>png/ledgreen.png</file>
+        <file>png/ledred.png</file>
+        <file>png/ledyellow.png</file>
+        <file>png/lock-128.png</file>
+        <file>png/nas-128.png</file>
+        <file>png/newuser.png</file>
+        <file>png/octagone-128.png</file>
+        <file>png/opened_folder-128.png</file>
+        <file>png/Pause.png</file>
+        <file>png/play.png</file>
+        <file>png/red.png</file>
+        <file>png/right-128.png</file>
+        <file>png/settings-128.png</file>
+        <file>png/stop.png</file>
+        <file>png/time.png</file>
+        <file>png/Trash Empty.png</file>
+        <file>png/upload-128.png</file>
+        <file>png/user.png</file>
+        <file>png/video_file-128.png</file>
+        <file>png/yellow.png</file>
+        <file>png/talk-128.png</file>
+        <file>png/play-128.png</file>
+        <file>png/record-128.png</file>
+        <file>png/stop-128.png</file>
+        <file>png/unlock-128.png</file>
+        <file>png/pencil-128.png</file>
+        <file>png/checkmark-128.png</file>
+        <file>png/cross-128.png</file>
+        <file>png/airplane_landing-128.png</file>
+        <file>png/pause-128.png</file>
+        <file>png/gmail_login-128.png</file>
+        <file>png/send_file-128.png</file>
+        <file>png/switch-128.png</file>
+        <file>png/sinchronize-128.png</file>
+        <file>png/blue.png</file>
+        <file>png/geo_fence-128.png</file>
+        <file>png/compress.png</file>
+        <file>png/compress_on.png</file>
+    </qresource>
+</RCC>

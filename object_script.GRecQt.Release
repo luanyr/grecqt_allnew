@@ -1,0 +1,16 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\recvthread.o
+./release\sendthread.o
+./release\qchartviewer.o
+./release\qtsingleapplication.o
+./release\qtlocalpeer.o
+./release\moc_mainwindow.o
+./release\moc_recvthread.o
+./release\moc_sendthread.o
+./release\moc_qchartviewer.o
+./release\moc_qtsingleapplication.o
+./release\moc_qtlocalpeer.o
+./release\qrc_icon.o
+);
