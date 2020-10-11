@@ -1,20 +1,20 @@
-#ifndef MAINUI_H
-#define MAINUI_H
-#if 0
-#include <QMainWindow>
+#ifndef MAINU1_H
+#define MAINU1_H
+
+#include <QWidget>
 #include "headers.h"
 #include "top_form.h"
 namespace Ui {
-class MainUI;
+class MainU1;
 }
 
 static QStringList SetDefaultChannelName()
 {
     QStringList list;
-    list << "光纤1" << "光纤2" << "光纤3" << "光纤4"
-                  << "光纤5" << "光纤6" << "光纤7" << "光纤8"
-                  << "光纤9" << "光纤10" << "光纤11" << "光纤12"
-                  << "网络1" << "网络2" << "网络3";
+    list << QObject::tr("光纤1") << QObject::tr("光纤2") << QObject::tr("光纤3") << QObject::tr("光纤4")
+                  << QObject::tr("光纤5") << QObject::tr("光纤6") << QObject::tr("光纤7") << QObject::tr("光纤8")
+                  << QObject::tr("光纤9") << QObject::tr("光纤10") << QObject::tr("光纤11") << QObject::tr("光纤12")
+                  << QObject::tr("网络1") << QObject::tr("网络2") << QObject::tr("网络3");
     return list;
 }
 
@@ -165,27 +165,16 @@ public:
     QStringList m_listStrChannel;
 };
 
-class myTabWidget : public QTabWidget
-{
-     Q_OBJECT
-protected:
-    void mouseDoubleClickEvent(QMouseEvent* e);
-public:
-    myTabWidget(QWidget* parent = 0);
-signals:
-    void signal_addwidget(int index);
-};
-
-class MainUI : public QMainWindow
+class MainU1 : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit MainUI(QWidget *parent = 0);
-    ~MainUI();
+    explicit MainU1(QWidget *parent = 0);
+    ~MainU1();
 
 private:
-    Ui::MainUI *ui;
+    Ui::MainU1 *ui;
     QTabWidget *TW_displayUI;
     Top_Form *tf;
     QPushButton *PB_addwidget;
@@ -194,28 +183,46 @@ private:
     SendThread *m_pThrdSend;
     BOOL m_connectstatus;
     BOOL m_loginstatus;
+    BOOL m_bLogined;
     CStoreInfo m_infoStore;
     QLabel *m_labelStatUser;
-    void TabWidget_Init();
+    QStringList m_listStrBit;
+    QStringList m_listStrLink;
+    QStringList m_ListStrChannel;
+    QList<QPushButton*> m_listChkRec;
+    QList<QPushButton*> m_listChkReplay;
+    QList<QPushButton*> m_listChkTypeReplay;
+    QList<QPushButton*> m_listChkDownload;
+    QList<QPushButton*> m_listChkTypeDownload;
+    QList<QPushButton*> m_listChkSelect;
+    QList<QPushButton*> m_listChkTypeSelect;
     void addwidget();
     void connectserver();
     void disconnectserver();
     void userlogin();
     void userlogout();
+    void UpdateChannelName();
+    void ChannelPageInit();
+    void StatusTableInit();
+    void cmsetdefault();
+    void cmconfirm();
+
 signals:
     void UImsg(QString msg);
     void Signal_Usrlogin(QString username, QString userpwsd);
     void Signal_Usrlogout();
+    void Signal_statnet(int);
 private slots:
     void slot_havaconnected();
     void slot_havedisconnected();
     void slot_UIstatusshow(QString msg);
     void slot_userlogin(QByteArray data);
+
 public slots:
     void slot_handlesignal(int type);
     void slot_addwidget(int index);
+    void slot_closeapp();
+    void slot_handlecmsignals(int);
 };
 
-
-#endif
-#endif // MAINUI_H
+#endif // MAINU1_H

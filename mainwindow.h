@@ -1,6 +1,6 @@
 ﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#if 0
 #include <QMainWindow>
 #include <QTcpSocket>
 #include <QTime>
@@ -412,5 +412,5 @@ private:
 
     void UpdateChannelName();
 };
-
+#endif
 #endif // MAINWINDOW_H

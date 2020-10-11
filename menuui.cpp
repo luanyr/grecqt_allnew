@@ -108,15 +108,61 @@ startmenu_init::startmenu_init()
     TBcloseapp->setText(tr("关闭程序"));
     TBcloseapp->resize(80, 80);
     TBcloseapp->move(660, 20);
-
-    QRegExp ipRx("((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-4]|[01]?\\d\\d?)");
-    LEipaddr->setValidator(new QRegExpValidator(ipRx, LEipaddr));
-    LEport->setValidator(new QIntValidator(0, 65535, LEport));
+    connect(this->TBconnect, SIGNAL(clicked(bool)), this, SLOT(slot_emitconnnect()));
+    connect(this->TBdisconnect, SIGNAL(clicked(bool)), this, SLOT(slot_emitdisconnect()));
+    connect(this->TBlogin, SIGNAL(clicked(bool)), this, SLOT(slot_emituserlogin()));
+    connect(this->TBlogout, SIGNAL(clicked(bool)), this, SLOT(slot_emituserlogout()));
+    connect(this->TBcloseapp, SIGNAL(clicked(bool)), this, SLOT(slot_emitturnoffapp()));
 }
 
 startmenu_init::~startmenu_init()
 {
 
+}
+
+QString startmenu_init::Getipaddr()
+{
+    return this->LEipaddr->text();
+}
+
+QString startmenu_init::Getipport()
+{
+    return this->LEport->text();
+}
+
+void startmenu_init::slot_emitconnnect()
+{
+    emit SIGNAL_Pbtype(PBconnect);
+}
+
+void startmenu_init::slot_emitdisconnect()
+{
+    emit SIGNAL_Pbtype(PBdisconnect);
+}
+
+void startmenu_init::slot_emituserlogin()
+{
+    emit SIGNAL_Pbtype(PBuserlogin);
+}
+
+void startmenu_init::slot_emituserlogout()
+{
+    emit SIGNAL_Pbtype(PBuserlogout);
+}
+
+void startmenu_init::slot_emitturnoffapp()
+{
+    emit SIGNAL_Pbtype(PBturnoffapp);
+}
+
+QString startmenu_init::Getusrname()
+{
+    return this->LEusrname->text();
+}
+
+QString startmenu_init::Getusrpswd()
+{
+    return this->LEpswd->text();
 }
 
 recordmenu_init::recordmenu_init()
@@ -664,16 +710,32 @@ channelmenu_init::channelmenu_init()
     PBconfirm->setText(tr("确定"));
     PBconfirm->move(880, 20);
 
-    TWchannel = new QTabWidget(this);
+    TWchannel = new QTableWidget(this);
     TWchannel->resize(950, 80);
     TWchannel->setStyleSheet("background-color:rgba(0,0,0,0)");
     TWchannel->move(10, 45);
-
+    connect(this->PBbacktodef, SIGNAL(clicked(bool)), this, SLOT(cmhandle_setchanneldefault()));
+    connect(this->PBconfirm, SIGNAL(clicked(bool)), this, SLOT(cmhandle_confirm()));
 }
 
 channelmenu_init::~channelmenu_init()
 {
 
+}
+
+void channelmenu_init::cmhandle_setchanneldefault()
+{
+    emit cmsignaltype(cmsignal_setchanneldefault);
+}
+
+void channelmenu_init::cmhandle_confirm()
+{
+    emit cmsignaltype(cmsignal_confirm);
+}
+
+QTableWidget *channelmenu_init::setchannel()
+{
+    return this->TWchannel;
 }
 
 specfymenu_init::specfymenu_init()
@@ -748,3 +810,4 @@ specfymenu_init::~specfymenu_init()
 {
 
 }
+

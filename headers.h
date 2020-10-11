@@ -1,6 +1,7 @@
 #ifndef HEADERS_H
 #define HEADERS_H
 #include <QLabel>
+#include <QObject>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QWidget>
@@ -22,8 +23,10 @@
 #include <QPalette>
 #include <QTimer>
 #include <QTcpSocket>
+#include <QFrame>
 #include <QTextBrowser>
 #include "recvthread.h"
 #include "sendthread.h"
 #include "qchartviewer.h"
+#include "menuui.h"
 #endif // HEADERS_H

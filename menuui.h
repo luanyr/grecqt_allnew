@@ -3,6 +3,21 @@
 
 #include <QWidget>
 #include "headers.h"
+#define PBconnect        0
+#define PBdisconnect     1
+#define PBuserlogin      2
+#define PBuserlogout     3
+#define PBturnoffapp     4
+
+#define statusnet_connected         0x00
+#define statusnet_disconnected      0x01
+
+#define statususr_login             0x00
+#define statususr_logout            0x01
+
+#define cmsignal_setchanneldefault  0x00
+#define cmsignal_confirm            0x01
+
 namespace Ui {
 class MenuUI;
 }
@@ -17,13 +32,20 @@ public:
     QFont *ft;
 private:
     Ui::MenuUI *ui;
+signals:
+
 };
 
 class startmenu_init : public  MenuUI
 {
+    Q_OBJECT
 public:
     startmenu_init();
     ~startmenu_init();
+    QString Getipaddr();
+    QString Getipport();
+    QString Getusrname();
+    QString Getusrpswd();
 private:
     QLabel *LAipaddr;
     QLabel *LAport;
@@ -38,10 +60,19 @@ private:
     QToolButton *TBlogin;
     QToolButton *TBlogout;
     QToolButton *TBcloseapp;
+public slots:
+    void slot_emitconnnect();
+    void slot_emitdisconnect();
+    void slot_emituserlogin();
+    void slot_emituserlogout();
+    void slot_emitturnoffapp();
+signals:
+    void SIGNAL_Pbtype(int);
 };
 
 class recordmenu_init : public MenuUI
 {
+    Q_OBJECT
 public:
     recordmenu_init();
     ~recordmenu_init();
@@ -57,6 +88,7 @@ private:
 
 class replaymenu_init : public MenuUI
 {
+    Q_OBJECT
 public:
     replaymenu_init();
     ~replaymenu_init();
@@ -87,6 +119,7 @@ private:
 
 class selectmenu_init : public MenuUI
 {
+    Q_OBJECT
 public:
     selectmenu_init();
     ~selectmenu_init();
@@ -127,6 +160,7 @@ public slots:
 
 class usermenu_init : public MenuUI
 {
+    Q_OBJECT
 public:
     usermenu_init();
     ~usermenu_init();
@@ -142,18 +176,26 @@ private:
 
 class channelmenu_init : public MenuUI
 {
+    Q_OBJECT
 public:
     channelmenu_init();
     ~channelmenu_init();
+    QTableWidget *setchannel();
 private:
     QLabel *LAmdftunnel;
     QPushButton *PBbacktodef;
     QPushButton *PBconfirm;
-    QTabWidget *TWchannel;
+    QTableWidget *TWchannel;
+public slots:
+    void cmhandle_setchanneldefault();
+    void cmhandle_confirm();
+signals:
+    void cmsignaltype(int);
 };
 
 class specfymenu_init : public MenuUI
 {
+    Q_OBJECT
 public:
     specfymenu_init();
     ~specfymenu_init();

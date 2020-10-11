@@ -1,4 +1,4 @@
-﻿
+﻿#if 0
 #include <QTableWidgetItem>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -1801,3 +1801,4 @@ void MainWindow::on_SetFilesz_clicked()
 
     emit SetfileszSignal(filesz);
 }
+#endif

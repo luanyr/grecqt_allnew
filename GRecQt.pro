@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     mainui.cpp \
     menuui.cpp \
     top_form.cpp \
-    contentui.cpp
+    contentui.cpp \
+    mainu1.cpp
 
 HEADERS  += mainwindow.h \
     recvthread.h \
@@ -58,13 +59,15 @@ HEADERS  += mainwindow.h \
     menuui.h \
     headers.h \
     top_form.h \
-    contentui.h
+    contentui.h \
+    mainu1.h
 
 FORMS    += mainwindow.ui \
     mainui.ui \
     menuui.ui \
     top_form.ui \
-    contentui.ui
+    contentui.ui \
+    mainu1.ui
 
 RESOURCES += \
     icon.qrc

@@ -21,7 +21,7 @@
 #define TMCMD_DIR   (6)
 
 #define NUM_CHECKCMD    (256)
-
+inline void StrCpyFix(QString str, char *p, UINT32 uMaxLen);
 typedef struct tagVec
 {
     double dblLon;

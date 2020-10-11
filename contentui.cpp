@@ -6,10 +6,12 @@ ContentUI::ContentUI(QWidget *parent) :
     ui(new Ui::ContentUI)
 {
     ui->setupUi(this);
-    this->resize(1500, 600);
+    this->resize(1500, 1500);
 
     TW_init();
     FileView_init();
+    StatusbarInit();
+
 }
 
 ContentUI::~ContentUI()
@@ -31,7 +33,8 @@ void ContentUI::TW_init()
     TLW_DevStatus->setParent(W_DevSta);
     TLW_DevStatus->resize(290, 490);
     TLW_DevStatus->move(5,5);
-
+    TLW_DevStatus->setColumnCount(2);
+    //TLW_DevStatus->setRowCount(11 + );
     TW_DevStaCap->resize(320, 520);
     TW_DevStaCap->insertTab(0, W_DevSta, tr("设备状态"));
 
@@ -77,4 +80,92 @@ void ContentUI::FileView_init()
 void ContentUI::ListShowStatus(QString msg)
 {
     this->TB_liststatus->append(tr("[")+DATETIME+tr("] ")+msg);
+}
+
+void ContentUI::StatusbarInit()
+{
+    this->statusBar = new QStatusBar(this);
+    statusBar->setObjectName(QString::fromUtf8("statusBar"));
+    statusBar->move(5, 550);
+
+    PB_statnet = new QPushButton;
+    //PB_statnet->setMinimumSize(PB_statnet->sizeHint());
+    PB_statnet->setToolTip(tr("显示与设备的连接状态"));
+    QFont font("宋体",8,QFont::Bold);
+    PB_statnet->setFont(font);
+    PB_statnet->setIcon(QIcon(":/ico/icon/dead.ico"));
+    PB_statnet->setText(tr("未连接"));
+    PB_statnet->resize(QSize(40,40));
+    statusBar->addWidget(PB_statnet);
+
+    QFrame *separator1 = new QFrame;
+    separator1->setFrameShape(QFrame::VLine);
+    statusBar->addWidget(separator1);
+
+    LAstatusr = new QLabel;
+    //LAstatusr->setMinimumSize(PB_statnet->sizeHint());
+    LAstatusr->setAlignment(Qt::AlignLeft);
+    LAstatusr->setText(tr("当前用户:         "));
+    statusBar->addWidget(LAstatusr);
+
+    QFrame *separator2 = new QFrame;
+    separator2->setFrameShape(QFrame::VLine);
+    statusBar->addWidget(separator2);
+
+    LAstatwork = new QLabel;
+    //LAstatwork->setMinimumSize(PB_statnet->sizeHint());
+    LAstatwork->setAlignment(Qt::AlignLeft);
+    LAstatwork->setText(tr("工作状态: 空闲"));
+    statusBar->addWidget(LAstatwork);
+
+    QFrame *separator3 = new QFrame;
+    separator3->setFrameShape(QFrame::VLine);
+    statusBar->addWidget(separator3);
+
+    progress = new QProgressBar;
+    progress->setOrientation(Qt::Horizontal);
+    progress->setMinimum(0);  // 最小值
+    progress->setMaximum(100);  // 最大值
+    progress->hide();
+    statusBar->addWidget(progress);
+
+    statusBar->setStyleSheet(QString("QStatusBar::item{border: 0px}"));
+}
+
+void ContentUI::Statusnet_Change(int connectstatus)
+{
+
+    if(connectstatus == statusnet_connected)
+    {
+        QFont font("宋体",8,QFont::Bold);
+        PB_statnet->setFont(font);
+        PB_statnet->setIcon(QIcon(":/ico/icon/alive.ico"));
+        PB_statnet->setText(tr("已连接"));
+        PB_statnet->resize(QSize(40,40));
+    } else if (connectstatus == statusnet_disconnected)
+    {
+        QFont font("宋体",8,QFont::Bold);
+        PB_statnet->setFont(font);
+        PB_statnet->setIcon(QIcon(":/ico/icon/dead.ico"));
+        PB_statnet->setText(tr("未连接"));
+        PB_statnet->resize(QSize(40,40));
+    }
+}
+
+void ContentUI::Statususr_Change(QString usrname, int loginstatus)
+{
+    if(loginstatus == statususr_login)
+    {
+        LAstatusr->setAlignment(Qt::AlignLeft);
+        LAstatusr->setText(tr("当前用户: ") + usrname);
+    } else if (loginstatus == statususr_logout)
+    {
+        LAstatusr->setAlignment(Qt::AlignLeft);
+        LAstatusr->setText(tr("当前用户:         "));
+    }
+}
+
+QTableWidget* ContentUI::SetTLWDevSta()
+{
+    return this->TLW_DevStatus;
 }

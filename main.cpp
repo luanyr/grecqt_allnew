@@ -5,7 +5,7 @@
 #include "top_form.h"
 #include "headers.h"
 #include "contentui.h"
-#include "mainui.h"
+#include "mainu1.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
     //a.setActivationWindow(&cu);
 //    Top_Form tf;
 //    tf.show();
-    MainUI mu;
-    a.setActiveWindow(&mu);
+    MainU1 mu;
+    //a.setActiveWindow(&mu);
     mu.show();
     return a.exec();
 }
