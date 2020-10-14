@@ -213,3 +213,103 @@ QTableWidget* Top_Form::SetTlwDevSta()
 {
     return this->cu->SetTLWDevSta();
 }
+
+QListWidget* Top_Form::SetLwListBit()
+{
+    return this->cu->SetLWListBit();
+}
+
+QLineEdit* Top_Form::SetTcpAddr()
+{
+    return this->sm->GetAddrEdit();
+}
+
+QLineEdit* Top_Form::SetTcport()
+{
+    return this->sm->GetPortEdit();
+}
+
+QLineEdit* Top_Form::SetUserName()
+{
+    return this->sm->GetUserNameEdit();
+}
+
+QLineEdit* Top_Form::SetUserPswd()
+{
+    return this->sm->GetUserpswdEdit();
+}
+
+QPushButton* Top_Form::SetRcdmChkA()
+{
+    return this->rcdm->SetchkRec_A();
+}
+
+QPushButton* Top_Form::SetRcdmChkB()
+{
+    return this->rcdm->SetchkRec_B();
+}
+
+QPushButton* Top_Form::SetRpmChkA()
+{
+    return this->rpm->SetchkReplayA();
+}
+
+QPushButton* Top_Form::SetRpmChkB()
+{
+    return this->rpm->SetchkReplayB();
+}
+
+QPushButton* Top_Form::SetRpmType1()
+{
+    return this->rpm->SetType1();
+}
+
+QPushButton* Top_Form::SetRpmType2()
+{
+    return this->rpm->SetType2();
+}
+
+QPushButton* Top_Form::SetRpmType3()
+{
+    return this->rpm->SetType3();
+}
+
+QPushButton* Top_Form::SetRpmType4()
+{
+    return this->rpm->SetType4();
+}
+
+QPushButton* Top_Form::SetRpmChkchnselreplay()
+{
+    return this->rpm->SetchkChnSelReplay();
+}
+
+QPushButton* Top_Form::SetRpmchkchansetreplay()
+{
+    return this->rpm->SetchkChanSelReplay();
+}
+
+QPushButton* Top_Form::SetRpmchktimesetreplay()
+{
+    return this->rpm->SetchkTimeSelReplay();
+}
+
+QPushButton* Top_Form::SetRpmchktypesetreplay()
+{
+    return this->rpm->SetchkTypeSelReplay();
+}
+
+QComboBox* Top_Form::SetRpmOutCom()
+{
+    return this->rpm->SetOutCom();
+}
+
+QDateTimeEdit* Top_Form::SetRpmStartTime()
+{
+    return this->rpm->SetStartTime();
+}
+
+QDateTimeEdit* Top_Form::SetRpmEndTime()
+{
+    return this->rpm->SetEndTime();
+}

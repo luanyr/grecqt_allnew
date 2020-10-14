@@ -781,6 +781,8 @@ QPushButton* selectmenu_init::SetchkReplayB()
     return this->TBchkReplayB;
 }
 
+
+
 managemenu_init::managemenu_init()
 {
     pTime = new QTimer();

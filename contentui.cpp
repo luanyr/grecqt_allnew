@@ -44,7 +44,7 @@ void ContentUI::TW_init()
     LAselfcheck->move(10,5);
 
     LW_listbit = new QListWidget(W_Selfcheck);
-    LW_listbit->resize(250, 150);
+    LW_listbit->resize(265, 120);
     LW_listbit->move(5, 20);
 
     QIcon PB_bitsmallicon;
@@ -168,4 +168,9 @@ void ContentUI::Statususr_Change(QString usrname, int loginstatus)
 QTableWidget* ContentUI::SetTLWDevSta()
 {
     return this->TLW_DevStatus;
+}
+
+QListWidget* ContentUI::SetLWListBit()
+{
+    return this->LW_listbit;
 }

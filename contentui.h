@@ -20,6 +20,7 @@ public:
     void Statuswork_Change();
     void Statususr_Change(QString, int);
     QTableWidget* SetTLWDevSta();
+    QListWidget *SetLWListBit();
 private:
     Ui::ContentUI *ui;
     QFont *ft;

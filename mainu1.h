@@ -7,6 +7,7 @@
 namespace Ui {
 class MainU1;
 }
+const int noOfChartViewers = 2;
 
 static QStringList SetDefaultChannelName()
 {
@@ -165,6 +166,18 @@ public:
     QStringList m_listStrChannel;
 };
 
+class myTabWidget : public QTabWidget
+{
+     Q_OBJECT
+protected:
+    void mouseDoubleClickEvent(QMouseEvent* e);
+public:
+    myTabWidget(QWidget* parent = 0);
+signals:
+    void signal_addwidget(int index);
+};
+
+
 class MainU1 : public QWidget
 {
     Q_OBJECT
@@ -181,14 +194,16 @@ private:
     QTcpSocket *m_tcpclient;
     RecvThread *m_pThrdRecv;
     SendThread *m_pThrdSend;
+//    QChartViewer *m_chartViewers[2];
     BOOL m_connectstatus;
     BOOL m_loginstatus;
     BOOL m_bLogined;
     CStoreInfo m_infoStore;
     QLabel *m_labelStatUser;
     QStringList m_listStrBit;
-    QStringList m_listStrLink;
     QStringList m_ListStrChannel;
+    QStringList m_listStrLink;
+    QList<QLabel*> m_listStatLink;
     QList<QPushButton*> m_listChkRec;
     QList<QPushButton*> m_listChkReplay;
     QList<QPushButton*> m_listChkTypeReplay;
@@ -196,6 +211,7 @@ private:
     QList<QPushButton*> m_listChkTypeDownload;
     QList<QPushButton*> m_listChkSelect;
     QList<QPushButton*> m_listChkTypeSelect;
+    void UiInit();
     void addwidget();
     void connectserver();
     void disconnectserver();
@@ -204,25 +220,39 @@ private:
     void UpdateChannelName();
     void ChannelPageInit();
     void StatusTableInit();
+    void StartPageInit();
+    void BitListInit();
+    void RecPageInit();
+    void ReplayPageInit();
+    void SelectPageInit();
     void cmsetdefault();
     void cmconfirm();
 
+
+//    void ChartUpdate(int idx, double dblUsed, double dblUsable);
 signals:
     void UImsg(QString msg);
     void Signal_Usrlogin(QString username, QString userpwsd);
     void Signal_Usrlogout();
     void Signal_statnet(int);
+    void Signal_InqStatus();
+    void Signal_Heartbeat();
 private slots:
     void slot_havaconnected();
     void slot_havedisconnected();
     void slot_UIstatusshow(QString msg);
     void slot_userlogin(QByteArray data);
-
+    void slot_inqstatus(QByteArray data);
+    void rpmchkTimeSelReplay();
+    void rpmchkTypeSelReplay();
+    void rpmchkChanSelReplay();
+    void rpmchkChnSelReplay();
 public slots:
     void slot_handlesignal(int type);
     void slot_addwidget(int index);
     void slot_closeapp();
     void slot_handlecmsignals(int);
+    //void slot_handlerpmsignal(int);
 };
 
 #endif // MAINU1_H

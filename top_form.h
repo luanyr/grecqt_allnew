@@ -20,6 +20,32 @@ public:
     QString Getipport();
     QString Getusrname();
     QString Getuserpswd();
+    void CuStatusNet(int);
+    void CuStatusUsr(QString, int);
+    QTableWidget *setchannel();
+    QTableWidget *SetTlwDevSta();
+    QListWidget *SetLwListBit();
+    QLineEdit* SetTcpAddr();
+    QLineEdit* SetTcport();
+    QLineEdit* SetUserName();
+    QLineEdit* SetUserPswd();
+    QPushButton *SetRcdmChkA();
+    QPushButton *SetRcdmChkB();
+    QPushButton *SetRpmChkA();
+    QPushButton *SetRpmChkB();
+    QPushButton *SetRpmType1();
+    QPushButton *SetRpmType2();
+    QPushButton *SetRpmType3();
+    QPushButton *SetRpmType4();
+    QPushButton *SetRpmChkchnselreplay();
+    QPushButton *SetRpmchkchansetreplay();
+    QPushButton *SetRpmchktypesetreplay();
+    QPushButton *SetRpmchktimesetreplay();
+    QComboBox* SetRpmOutCom();
+    QDateTimeEdit *SetRpmStartTime();
+    QDateTimeEdit *SetRpmEndTime();
+private:
+    Ui::Top_Form *ui;
     startmenu_init      *sm;
     replaymenu_init     *rpm;
     recordmenu_init     *rcdm;
@@ -28,12 +54,6 @@ public:
     usermenu_init       *um;
     channelmenu_init    *cm;
     specfymenu_init     *spm;
-    void CuStatusNet(int);
-    void CuStatusUsr(QString, int);
-    QTableWidget *setchannel();
-    QTableWidget *SetTlwDevSta();
-private:
-    Ui::Top_Form *ui;
     QComboBox   *CBXmenu;
     QTabWidget  *TW;
     ContentUI *cu;

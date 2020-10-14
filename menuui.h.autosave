@@ -188,13 +188,11 @@ public:
     ~selectmenu_init();
     QPushButton* SetchkReplayA();
     QPushButton* SetchkReplayB();
-    QPushButton* SetType1();
-    QPushButton* SetType2();
-    QPushButton* SetType3();
-    QPushButton* SetType4();
     QPushButton* SetchkChnSelReplay();
     QPushButton* SetchkTimeSelReplay();
     QPushButton* SetchkTypeSelReplay();
+    QDateTimeEdit *SetStartTime();
+    QDateTimeEdit *SetEndTime();
 private:
     QPushButton *PBchkchnselreplay;
     QToolButton *TBchkReplayA;
@@ -211,6 +209,10 @@ private:
     QPushButton *PBtype4;
     QToolButton *TBdelfile;
     QToolButton *TBsearchfile;
+private slots:
+    
+signals:
+    void SIGNAL_SmType(int);
 };
 
 class managemenu_init : public MenuUI

@@ -6,6 +6,7 @@
 #include "headers.h"
 #include "contentui.h"
 #include "mainu1.h"
+#include "mainwidget.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -19,8 +20,10 @@ int main(int argc, char *argv[])
     //a.setActivationWindow(&cu);
 //    Top_Form tf;
 //    tf.show();
-    MainU1 mu;
+//    MainU1 mu;
     //a.setActiveWindow(&mu);
-    mu.show();
+//    mu.show();
+    MainWidget m;
+    m.show();
     return a.exec();
 }
