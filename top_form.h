@@ -31,6 +31,10 @@ public:
     QLineEdit* SetUserPswd();
     QPushButton *SetRcdmChkA();
     QPushButton *SetRcdmChkB();
+    UINT32  GetRcdmFilesz();
+    QString GetRcdmFileszUint();
+    QToolButton *SetRcdmRecStart();
+    QToolButton *SetRcdmRecStop();
     QPushButton *SetRpmChkA();
     QPushButton *SetRpmChkB();
     QPushButton *SetRpmType1();
@@ -41,9 +45,43 @@ public:
     QPushButton *SetRpmchkchansetreplay();
     QPushButton *SetRpmchktypesetreplay();
     QPushButton *SetRpmchktimesetreplay();
-    QComboBox* SetRpmOutCom();
+    QComboBox *SetRpmOutCom();
     QDateTimeEdit *SetRpmStartTime();
     QDateTimeEdit *SetRpmEndTime();
+    QToolButton *SetRpmReplay();
+    QToolButton *SetRpmPause();
+    QToolButton *SetRpmStop();
+    QPushButton *SetSlcmChkA();
+    QPushButton *SetSlcmChkB();
+    QPushButton *SetSlcmChnSelect();
+    QPushButton *SetSlcmTimeSelect();
+    QPushButton *SetSlcmTypeSelect();
+    QDateTimeEdit *SetSlcmStartTime();
+    QDateTimeEdit *SetSlcmEndTime();
+    QPushButton *SetSlcmType1();
+    QPushButton *SetSlcmType2();
+    QPushButton *SetSlcmType3();
+    QPushButton *SetSlcmType4();
+    QToolButton *SetSlcmDelFile();
+    QToolButton *SetSlcmInqDir();
+    QTableWidget *SetCuTableFile();
+    QTreeWidget *SetCuTreeFile();
+    QPushButton *SetMgmTimeSync();
+    QDateTimeEdit *SetMgmTimeEdit();
+    QToolButton *SetMgmSendTime();
+    QToolButton *SetMgmSelfCheck();
+    QPushButton *SetCuBitsmall();
+    QListWidget *SetCuListBit();
+    QString GetUmUsrname();
+    QString GetUmUsrpswd();
+    QToolButton *SetUmCreatUsr();
+    QToolButton *SetUmModifyPswd();
+    QToolButton *SetUmDelusr();
+    QToolButton *SetSpmClearData();
+    QToolButton *SetSpmSoftReset();
+    QToolButton *SetSpmPoweroff();
+    QToolButton *SetSpmUpdate();
+    QToolButton *SetSpmSoftdistory();
 private:
     Ui::Top_Form *ui;
     startmenu_init      *sm;
@@ -70,9 +108,21 @@ public slots:
     void menu_hidden();
     void slot_handlepbsignals(int);
     void slot_cmhandlesignals(int);
+    void slot_rpmhandlesignals(int);
+    void slot_rcdmhandlesignal(int);
+    void slot_slcmhandlesignal(int);
+    void slot_mgmhandlesignal(int);
+    void slot_umhandlesignal(int);
+    void slot_spmhandlesignal(int);
 signals:
     void signals_pbtype(int);
     void signals_cmtype(int);
+    void signals_rpmtype(int);
+    void signals_rcdmtype(int);
+    void signals_smtype(int);
+    void signals_mgmtype(int);
+    void signals_umtype(int);
+    void signals_spmtype(int);
 };
 
 #endif // TOP_FORM_H

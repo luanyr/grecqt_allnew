@@ -38,6 +38,31 @@
 #define rpmsignal_pause             0x0b
 #define rpmsignal_stop              0x0c
 
+#define smsignal_chkchnselect       0x00
+#define smsignal_chkSelectTypeA     0x01
+#define smsignal_chkSelectTypeB     0x02
+#define smsignal_chkTimeSelect      0x03
+#define smsignal_chkTypeSelect      0x04
+#define smsginal_type1              0x05
+#define smsginal_type2              0x06
+#define smsginal_type3              0x07
+#define smsginal_type4              0x08
+#define smsignal_DeleteFile         0x09
+#define smsignal_InqDir             0x0a
+
+#define mgmsignal_timesync          0x00
+#define mgmsignal_sendtime          0x01
+#define mgmsignal_selfcheck         0x02
+
+#define umsignal_creatusr           0x00
+#define umsignal_modifypswd         0x01
+#define umsignal_delusr             0x02
+
+#define spmsignal_cleardata         0x00
+#define spmsignal_softreset         0x01
+#define spmsignal_poweroff          0x02
+#define spmsignal_update            0x03
+#define spmsignal_spftdistory       0x04
 namespace Ui {
 class MenuUI;
 }
@@ -102,6 +127,10 @@ public:
     ~recordmenu_init();
     QPushButton *SetchkRec_A();
     QPushButton *SetchkRec_B();
+    UINT32 GetFilesz();
+    QString GetFileszUint();
+    QToolButton *SetRecStart();
+    QToolButton *SetRecStop();
 private:
     QLineEdit *LEfilesz;
     QComboBox *CBfilesz;
@@ -139,6 +168,9 @@ public:
     QComboBox* SetOutCom();
     QDateTimeEdit *SetStartTime();
     QDateTimeEdit *SetEndTime();
+    QToolButton *SetTbReplay();
+    QToolButton *SetTbPause();
+    QToolButton *SetTbStop();
 private:
     QPushButton *PBchkchnselreplay;
     QPushButton *TBchkReplayA;
@@ -188,17 +220,21 @@ public:
     ~selectmenu_init();
     QPushButton* SetchkReplayA();
     QPushButton* SetchkReplayB();
+    QPushButton* SetchkChnSelReplay();
+    QPushButton* SetchkTimeSelReplay();
+    QPushButton* SetchkTypeSelReplay();
     QPushButton* SetType1();
     QPushButton* SetType2();
     QPushButton* SetType3();
     QPushButton* SetType4();
-    QPushButton* SetchkChnSelReplay();
-    QPushButton* SetchkTimeSelReplay();
-    QPushButton* SetchkTypeSelReplay();
+    QDateTimeEdit *SetStartTime();
+    QDateTimeEdit *SetEndTime();
+    QToolButton *SetDelFile();
+    QToolButton *SetInqDir();
 private:
     QPushButton *PBchkchnselreplay;
-    QToolButton *TBchkReplayA;
-    QToolButton *TBchkReplayB;
+    QPushButton *TBchkReplayA;
+    QPushButton *TBchkReplayB;
     QPushButton *PBcjkTimeSelReplay;
     QLabel *LAstarttime;
     QLabel *LAendtime;
@@ -211,6 +247,21 @@ private:
     QPushButton *PBtype4;
     QToolButton *TBdelfile;
     QToolButton *TBsearchfile;
+
+private slots:
+    void slot_emitchkchnselect();
+    void slot_emitchkSelectA();
+    void slot_emitchkSelectB();
+    void slot_emitcjkTimeSelect();
+    void slot_emitchktypeSelect();
+    void slot_emittype1();
+    void slot_emittype2();
+    void slot_emittype3();
+    void slot_emittype4();
+    void slot_emitDeleteFile();
+    void slot_emitInqDir();
+signals:
+    void SIGNAL_SmType(int);
 };
 
 class managemenu_init : public MenuUI
@@ -219,6 +270,10 @@ class managemenu_init : public MenuUI
 public:
     managemenu_init();
     ~managemenu_init();
+    QPushButton *SetTimeSync();
+    QDateTimeEdit *SetTimeEdit();
+    QToolButton *SetSendTime();
+    QToolButton *SetSelfCheck();
 private:
     QTimer *pTime;
     QLabel *LAsettime;
@@ -226,8 +281,14 @@ private:
     QDateTimeEdit *DTEtime;
     QToolButton *TBsendtime;
     QToolButton *TBselfcheck;
+signals:
+    void SIGNAL_MgmType(int);
 public slots:
     void slot_timesyncfunc();
+    void slot_emitPBsync();
+    void slot_emitTBsendtime();
+    void slot_emitTBselfcheck();
+
 };
 
 class usermenu_init : public MenuUI
@@ -236,6 +297,11 @@ class usermenu_init : public MenuUI
 public:
     usermenu_init();
     ~usermenu_init();
+    QString Getusrname();
+    QString Getusrpswd();
+    QToolButton *SetCreatUsr();
+    QToolButton *SetModifyPswd();
+    QToolButton *SetDelUsr();
 private:
     QLabel *LAusername;
     QLabel *LAuserpswd;
@@ -244,6 +310,12 @@ private:
     QToolButton *TBcreatuser;
     QToolButton *TBmodifypsdw;
     QToolButton *TBdeluser;
+signals:
+    void SIGNAL_UmType(int);
+public slots:
+    void slot_emitTBcreatusr();
+    void slot_emitTBmodifypswd();
+    void slot_emitTBdelusr();
 };
 
 class channelmenu_init : public MenuUI
@@ -271,6 +343,11 @@ class specfymenu_init : public MenuUI
 public:
     specfymenu_init();
     ~specfymenu_init();
+    QToolButton *SetCleardata();
+    QToolButton *SetSoftreset();
+    QToolButton *SetPoweroff();
+    QToolButton *SetUpdate();
+    QToolButton *SetSoftdistory();
 private:
     QToolButton *TBcleardata;
     QToolButton *TBsoftreset;
@@ -278,6 +355,14 @@ private:
     QToolButton *TBupdate;
     QToolButton *TBsoftdistory;
     QLabel *LAnotice;
+public slots:
+    void slot_emitcleardata();
+    void slot_emitsoftreset();
+    void slot_emitpoweroff();
+    void slot_emitupdate();
+    void slot_emitsoftdistory();
+signals:
+    void SIGNAL_SpmType(int);
 };
 
 #endif // MENUUI_H

@@ -174,3 +174,23 @@ QListWidget* ContentUI::SetLWListBit()
 {
     return this->LW_listbit;
 }
+
+QTableWidget *ContentUI::SetTableFile()
+{
+    return this->TW_tablefile;
+}
+
+QTreeWidget *ContentUI::SetTreeFile()
+{
+    return this->TRW_treefile;
+}
+
+QPushButton *ContentUI::Setbitsmall()
+{
+    return this->PB_bitsmall;
+}
+
+QListWidget *ContentUI::Setlistbit()
+{
+    return this->LW_listbit;
+}

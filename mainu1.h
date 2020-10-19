@@ -198,6 +198,8 @@ private:
     BOOL m_connectstatus;
     BOOL m_loginstatus;
     BOOL m_bLogined;
+    BOOL m_bNeedRecMode;
+    BOOL m_bManual;
     CStoreInfo m_infoStore;
     QLabel *m_labelStatUser;
     QStringList m_listStrBit;
@@ -211,6 +213,7 @@ private:
     QList<QPushButton*> m_listChkTypeDownload;
     QList<QPushButton*> m_listChkSelect;
     QList<QPushButton*> m_listChkTypeSelect;
+    QList<CFileAttrib> m_listFile;
     void UiInit();
     void addwidget();
     void connectserver();
@@ -225,10 +228,18 @@ private:
     void RecPageInit();
     void ReplayPageInit();
     void SelectPageInit();
+    void OtherInit();
     void cmsetdefault();
     void cmconfirm();
-
-
+    QVariant ReadLimitReplay();
+    QVariant ReadLimitSelect();
+    QMutex m_mutexFile;
+    void TimerSyncTimeFunction();
+    void Mysleep(UINT32 usec){
+        QTime reachtime = QTime::currentTime().addMSecs(usec);
+        while(QTime::currentTime() < reachtime)
+            QCoreApplication::processEvents(QEventLoop::AllEvents,100);
+    }
 //    void ChartUpdate(int idx, double dblUsed, double dblUsable);
 signals:
     void UImsg(QString msg);
@@ -237,6 +248,23 @@ signals:
     void Signal_statnet(int);
     void Signal_InqStatus();
     void Signal_Heartbeat();
+    void SetfileszSignal(UINT32 uPU);
+    void RecConSignal(UINT32 uCon);
+    void PlaybackStartSignal(QVariant fileter);
+    void PlaybackPauseSignal(UINT32 uPbPause);
+    void PlaybackStopSignal();
+    void FileDelSignal(QVariant fileter);
+    void DirSignal(QVariant fileter);
+    void SetTimeSignal(QDateTime dateTime);
+    void MBitSignal();
+    void UserNewSignal(QString strUserName, QString strPassword);
+    void UserChgPwSignal(QString strUserName, QString strPwNew);
+    void UserDelSignal(QString strUserName, QString strPassword);
+    void WipeSignal();
+    void UpdateSignal();
+    void ResetSignal();
+    void SelfDestorySignal();
+    void PowerDownSignal();
 private slots:
     void slot_havaconnected();
     void slot_havedisconnected();
@@ -247,11 +275,52 @@ private slots:
     void rpmchkTypeSelReplay();
     void rpmchkChanSelReplay();
     void rpmchkChnSelReplay();
+    void rpmchkReplayA();
+    void rpmchkReplayB();
+    void rpmtype1();
+    void rpmtype2();
+    void rpmtype3();
+    void rpmtype4();
+    void rpmreplaystart();
+    void rpmreplaystop();
+    void rpmreplaypause();
+    void slot_slcmChkchnSelSelect();
+    void slot_slcmChkTimeSelSelect();
+    void slot_slcmChkTypeSelSelect();
+    void slot_slcmSelectA();
+    void slot_slcmSelectB();
+    void slot_slcmType1();
+    void slot_slcmType2();
+    void slot_slcmType3();
+    void slot_slcmType4();
+    void slot_slcmdeletefile();
+    void slot_slcminqdir();
+    void slot_rcdmSetFilesz();
+    void slot_rcdmReplayA();
+    void slot_rcdmReplayB();
+    void slot_rcdmRecordStart();
+    void slot_rcdmRecordEnd();
+    void slot_mgmtimesync();
+    void slot_mgmsendtime();
+    void slot_mgmselfcheck();
+    void slot_umcreatusr();
+    void slot_ummodifypswd();
+    void slot_umdelusr();
+    void slot_spmcleardata();
+    void slot_spmsoftreset();
+    void slot_spmpoweroff();
+    void slot_spmupdate();
+    void slot_spmsoftdistory();
 public slots:
     void slot_handlesignal(int type);
-    void slot_addwidget(int index);
     void slot_closeapp();
+    void slot_handlercdmsignal(int);
     void slot_handlecmsignals(int);
+    void slot_handlerpmsignals(int);
+    void slot_handlesmsignals(int);
+    void slot_handlemgmsignals(int);
+    void slot_handleumsignals(int);
+    void slot_handlespmsignals(int);
     //void slot_handlerpmsignal(int);
 };
 

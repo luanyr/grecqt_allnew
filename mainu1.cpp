@@ -26,8 +26,30 @@ MainU1::MainU1(QWidget *parent) :
     connect(this->m_pThrdRecv, SIGNAL(InqStatusSignal(QByteArray)), this, SLOT(slot_inqstatus(QByteArray)));
     connect(this, SIGNAL(Signal_InqStatus()), this->m_pThrdSend, SLOT(InqStatusSlot()));
     connect(this->m_pThrdSend, SIGNAL(SendMsgToui(QString)), this, SLOT(slot_UIstatusshow(QString)));
-    //connect(this->);
+    connect(this->tf, SIGNAL(signals_rcdmtype(int)), this, SLOT(slot_handlercdmsignal(int)));
+    connect(this->tf, SIGNAL(signals_rpmtype(int)), this, SLOT(slot_handlerpmsignals(int)));
     connect(this, SIGNAL(Signal_Heartbeat()), this->m_pThrdSend, SLOT(HeartBeatSlot()));
+    connect(this, SIGNAL(SetfileszSignal(UINT32)), m_pThrdSend, SLOT(SetfileSzSlot(UINT32)));
+    connect(this, SIGNAL(RecConSignal(UINT32)), m_pThrdSend, SLOT(RecConSlot(UINT32)));
+    connect(this, SIGNAL(PlaybackPauseSignal(UINT32)), m_pThrdSend, SLOT(PlaybackPauseSlot(UINT32)));
+    connect(this, SIGNAL(PlaybackStartSignal(QVariant)), m_pThrdSend, SLOT(PlaybackStartSlot(QVariant)));
+    connect(this, SIGNAL(PlaybackStopSignal()), m_pThrdSend, SLOT(PlaybackStopSlot()));
+    connect(this->tf, SIGNAL(signals_smtype(int)), this, SLOT(slot_handlesmsignals(int)));
+    connect(this, SIGNAL(FileDelSignal(QVariant)), m_pThrdSend, SLOT(FileDelSlot(QVariant)));
+    connect(this->tf, SIGNAL(signals_mgmtype(int)), this, SLOT(slot_handlemgmsignals(int)));
+    connect(this->tf, SIGNAL(signals_umtype(int)), this, SLOT(slot_handleumsignals(int)));
+    connect(this->tf, SIGNAL(signals_spmtype(int)), this, SLOT(slot_handlespmsignals(int)));
+    connect(m_pThrdRecv, SIGNAL(DirSignal(QList<CFileAttrib>)), this, SLOT(DirSlot(QList<CFileAttrib>)), Qt::DirectConnection);
+    connect(this, SIGNAL(SetTimeSignal(QDateTime)), m_pThrdSend, SLOT(SetTimeSlot(QDateTime)));
+    connect(this, SIGNAL(MBitSignal()), m_pThrdSend, SLOT(BitSlot()));
+    connect(this, SIGNAL(UserNewSignal(QString, QString)), m_pThrdSend, SLOT(UserNewSlot(QString, QString)));
+    connect(this, SIGNAL(UserChgPwSignal(QString, QString)), m_pThrdSend, SLOT(UserChgPwSlot(QString, QString)));
+    connect(this, SIGNAL(UserDelSignal(QString, QString)), m_pThrdSend, SLOT(UserDelSlot(QString, QString)));
+    connect(this, SIGNAL(WipeSignal()), m_pThrdSend, SLOT(WipeSlot()));
+    connect(this, SIGNAL(UpdateSignal()), m_pThrdSend, SLOT(UpdateSlot()));
+    connect(this, SIGNAL(ResetSignal()), m_pThrdSend, SLOT(ResetSlot()));
+    connect(this, SIGNAL(SelfDestorySignal()), m_pThrdSend, SLOT(SelfDestorySlot()));
+    connect(this, SIGNAL(PowerDownSignal()), m_pThrdSend, SLOT(PowerDownSlot()));
 }
 
 MainU1::~MainU1()
@@ -51,18 +73,16 @@ void MainU1::UiInit()
     m_ListStrChannel = m_infoStore.m_listStrChannel;
     m_listStrLink << m_ListStrChannel << tr("磁盘箱");
     m_listStrBit << m_ListStrChannel << tr("磁盘箱") << tr("板载电子盘") << tr("扩展电子盘");;
-    ChannelPageInit();
+
     StatusTableInit();
     BitListInit();
     StartPageInit();
     ReplayPageInit();
+    SelectPageInit();
+    OtherInit();
+    ChannelPageInit();
 }
 
-void MainU1::slot_addwidget(int index)
-{
-    TW_displayUI->addTab(tf, "client1");
-
-}
 
 void MainU1::slot_havaconnected()
 {
@@ -348,9 +368,254 @@ void MainU1::ReplayPageInit()
     rpmchkChanSelReplay();
 }
 
+void MainU1::slot_handlerpmsignals(int type)
+{
+    switch (type) {
+    case rpmsignal_chkchnselreplay:
+        rpmchkChnSelReplay();
+        break;
+    case rpmsignal_chkChanSelReplay:
+        rpmchkChanSelReplay();
+        break;
+    case rpmsignal_cjkTimeSelReplay:
+        rpmchkTimeSelReplay();
+        break;
+    case rpmsignal_chktypeSelReplay:
+        rpmchkTypeSelReplay();
+        break;
+    case rpmsignal_type1:
+        rpmtype1();
+        break;
+    case rpmsignal_type2:
+        rpmtype2();
+        break;
+    case rpmsignal_type3:
+        rpmtype3();
+        break;
+    case rpmsignal_type4:
+        rpmtype4();
+        break;
+    case rpmsignal_chkReplayA:
+        rpmchkReplayA();
+        break;
+    case rpmsignal_chkReplayB:
+        rpmchkReplayB();
+        break;
+    case rpmsignal_replay:
+        rpmreplaystart();
+        break;
+    case rpmsignal_pause:
+        rpmreplaypause();
+        break;
+    case rpmsignal_stop:
+        rpmreplaystop();
+        break;
+    default:
+        break;
+    }
+}
+
+void MainU1::slot_handlercdmsignal(int type)
+{
+    switch (type) {
+    case rcdmsignal_setfilesz:
+        slot_rcdmSetFilesz();
+        break;
+    case rcdmsignal_chkRec_A:
+        slot_rcdmReplayA();
+        break;
+    case rcdmsignal_chkRec_B:
+        slot_rcdmReplayB();
+        break;
+    case rcdmsignal_recstart:
+        slot_rcdmRecordStart();
+        break;
+    case rcdmsignal_recstop:
+        slot_rcdmRecordEnd();
+        break;
+    default:
+        break;
+    }
+}
+
+void MainU1::slot_handlesmsignals(int type)
+{
+    switch (type) {
+    case smsignal_chkchnselect:
+        slot_slcmChkchnSelSelect();
+        break;
+    case smsignal_chkSelectTypeA:
+        slot_slcmSelectA();
+        break;
+    case smsignal_chkSelectTypeB:
+        slot_slcmSelectB();
+        break;
+    case smsignal_chkTimeSelect:
+        slot_slcmChkTimeSelSelect();
+        break;
+    case smsignal_chkTypeSelect:
+        slot_slcmChkTypeSelSelect();
+        break;
+    case smsginal_type1:
+        slot_slcmType1();
+        break;
+    case smsginal_type2:
+        slot_slcmType2();
+        break;
+    case smsginal_type3:
+        slot_slcmType3();
+        break;
+    case smsginal_type4:
+        slot_slcmType4();
+        break;
+    case smsignal_DeleteFile:
+        slot_slcmdeletefile();
+        break;
+    case smsignal_InqDir:
+        slot_slcminqdir();
+        break;
+    default:
+        break;
+    }
+}
+
+void MainU1::slot_handlemgmsignals(int type)
+{
+    switch (type) {
+    case mgmsignal_sendtime:
+        slot_mgmsendtime();
+        break;
+    case mgmsignal_selfcheck:
+        slot_mgmselfcheck();
+        break;
+    default:
+        break;
+    }
+}
+
+void MainU1::slot_handleumsignals(int type)
+{
+    switch (type) {
+    case umsignal_creatusr:
+        slot_umcreatusr();
+        break;
+    case umsignal_modifypswd:
+        slot_ummodifypswd();
+        break;
+    case umsignal_delusr:
+        slot_umdelusr();
+        break;
+    default:
+        break;
+    }
+}
+
+void MainU1::slot_handlespmsignals(int type)
+{
+    switch (type) {
+    case spmsignal_cleardata:
+        slot_spmcleardata();
+        break;
+    case spmsignal_softreset:
+        slot_spmsoftreset();
+        break;
+    case spmsignal_poweroff:
+        slot_spmpoweroff();
+        break;
+    case spmsignal_update:
+        slot_spmupdate();
+        break;
+    case spmsignal_spftdistory:
+        slot_spmsoftdistory();
+        break;
+    default:
+        break;
+    }
+}
+void MainU1::slot_rcdmSetFilesz()
+{
+    UINT32 filesz = this->tf->GetRcdmFilesz();
+    if(this->tf->GetRcdmFileszUint() == "GB")
+        filesz = filesz * 1024;
+    emit SetfileszSignal(filesz);
+}
+
+void MainU1::slot_rcdmReplayA()
+{
+    bool bChecked = this->tf->SetRcdmChkA()->isChecked();
+    QIcon PBrcdmReplayA;
+    if(bChecked)
+    {
+        PBrcdmReplayA.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRcdmChkA()->setIcon(PBrcdmReplayA);
+    } else {
+        PBrcdmReplayA.addFile(":/png/png/cross-128.png");
+        this->tf->SetRcdmChkA()->setIcon(PBrcdmReplayA);
+    }
+}
+
+void MainU1::slot_rcdmReplayB()
+{
+    bool bChecked = this->tf->SetRcdmChkB()->isChecked();
+    QIcon PBrcdmReplayB;
+    if(bChecked)
+    {
+        PBrcdmReplayB.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRcdmChkB()->setIcon(PBrcdmReplayB);
+    } else {
+        PBrcdmReplayB.addFile(":/png/png/cross-128.png");
+        this->tf->SetRcdmChkB()->setIcon(PBrcdmReplayB);
+    }
+}
+
+void MainU1::slot_rcdmRecordStart()
+{
+    if(m_bNeedRecMode) {}
+    UINT32 uRecCon = 0;
+    for(int i = 0; i < m_listChkRec.count(); i++)
+    {
+        if(m_listChkRec.at(i)->isChecked()) uRecCon |= 1 << i;
+    }
+
+    this->tf->SetRcdmRecStop()->setEnabled(true);
+    this->tf->SetRcdmRecStart()->setEnabled(false);
+    emit RecConSignal(uRecCon);
+    Mysleep(1000);
+    this->tf->SetRcdmRecStart()->setEnabled(true);
+}
+
+void MainU1::slot_rcdmRecordEnd()
+{
+    UINT32 uRecCon = 0;
+    for(int i = 0; i < m_listChkRec.count(); i++)
+    {
+        if(m_listChkRec.at(i)->isChecked()) uRecCon &= ~(1 << i);
+    }
+    this->tf->SetRcdmRecStop()->setEnabled(false);
+    emit RecConSignal(uRecCon);
+}
+
+
+void MainU1::OtherInit()
+{
+    QRegExp double_rx180("^-?(180(\\.0{1,5})?|(1?[0-7]?\\d|\\d?\\d?)(\\.\\d{1,5})?)$");
+    QRegExp double_rx90("^-?(90(\\.0{1,5})?|[1-8]?\\d(\\.\\d{1,5})?)$");
+    QRegExp double_rx360("^((([0-2])?\\d{1,2}|3[0-5]\\d)(\\.\\d{1})?|360(\\.0{1})?)$");
+}
+
 void MainU1::rpmchkChnSelReplay()
 {
     bool bChecked = this->tf->SetRpmChkchnselreplay()->isChecked();
+    if(bChecked)
+    {
+        QIcon PBchkchnselreplayicon;
+        PBchkchnselreplayicon.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmChkchnselreplay()->setIcon(PBchkchnselreplayicon);
+    } else {
+        QIcon PBchkchnselreplayicon;
+        PBchkchnselreplayicon.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmChkchnselreplay()->setIcon(PBchkchnselreplayicon);
+    }
     for(int i=0; i<m_listChkReplay.count(); i++)
     {
         m_listChkReplay.at(i)->setEnabled(bChecked);
@@ -379,9 +644,490 @@ void MainU1::rpmchkTypeSelReplay()
     }
 }
 
+void MainU1::rpmtype1()
+{
+    bool bChecked = this->tf->SetRpmType1()->isChecked();
+    QIcon PBrpmtype1;
+    if(bChecked)
+    {
+        PBrpmtype1.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmType1()->setIcon(PBrpmtype1);
+    } else {
+        PBrpmtype1.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmType1()->setIcon(PBrpmtype1);
+    }
+}
+
+void MainU1::rpmtype2()
+{
+    bool bChecked = this->tf->SetRpmType2()->isChecked();
+    QIcon PBrpmtype2;
+    if(bChecked)
+    {
+        PBrpmtype2.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmType2()->setIcon(PBrpmtype2);
+    } else {
+        PBrpmtype2.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmType2()->setIcon(PBrpmtype2);
+    }
+}
+
+void MainU1::rpmtype3()
+{
+    bool bChecked = this->tf->SetRpmType3()->isChecked();
+    QIcon PBrpmtype3;
+    if(bChecked)
+    {
+        PBrpmtype3.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmType3()->setIcon(PBrpmtype3);
+    } else {
+        PBrpmtype3.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmType3()->setIcon(PBrpmtype3);
+    }
+}
+
+void MainU1::rpmtype4()
+{
+    bool bChecked = this->tf->SetRpmType4()->isChecked();
+    QIcon PBrpmtype4;
+    if(bChecked)
+    {
+        PBrpmtype4.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmType4()->setIcon(PBrpmtype4);
+    } else {
+
+        PBrpmtype4.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmType4()->setIcon(PBrpmtype4);
+    }
+}
+
+void MainU1::rpmchkReplayA()
+{
+    bool bChecked = this->tf->SetRpmChkA()->isChecked();
+    QIcon PBrpmchkReplayA;
+    if(bChecked)
+    {
+        PBrpmchkReplayA.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmChkA()->setIcon(PBrpmchkReplayA);
+    } else {
+
+        PBrpmchkReplayA.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmChkA()->setIcon(PBrpmchkReplayA);
+    }
+}
+
+void MainU1::rpmchkReplayB()
+{
+    bool bChecked = this->tf->SetRpmChkB()->isChecked();
+    QIcon PBrpmchkReplayB;
+    if(bChecked)
+    {
+        PBrpmchkReplayB.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmChkB()->setIcon(PBrpmchkReplayB);
+    } else {
+
+        PBrpmchkReplayB.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmChkB()->setIcon(PBrpmchkReplayB);
+    }
+}
+
+QVariant MainU1::ReadLimitReplay()
+{
+    T_FILTER filter;
+    filter.uFileFlags = 0;
+    filter.uValid = 0;
+    if(this->tf->SetRpmchkchansetreplay()->isChecked()) filter.uValid |= FIELD__CHAN;
+    filter.uChannel = 0;
+    for(int i=0; i<2; i++)
+    {
+        if(m_listChkReplay.at(i)->isChecked())
+            filter.uChannel |= 1<<(i);
+    }
+    if(this->tf->SetRpmchkchansetreplay()->isChecked())
+    {
+        filter.uFileFlags = filter.uChannel;
+        filter.uChannel = 0;
+        filter.uChannel |= 1<<(this->tf->SetRpmOutCom()->currentIndex());
+        emit UImsg(tr("current index: ") +QString::number(filter.uFileFlags, 10));
+    }
+    if(this->tf->SetRpmchktimesetreplay()->isChecked()) filter.uValid |= FIELD__TIME_BEGIN | FIELD__TIME_END;
+    filter.timeBeg = this->tf->SetRpmStartTime()->dateTime();
+    filter.timeEnd = this->tf->SetRpmEndTime()->dateTime();
+
+    if(this->tf->SetRpmchktypesetreplay()->isChecked()) filter.uValid |= FIELD__DATA_TYPE;
+    filter.uRange = 0;
+    for(int i=0; i<m_listChkTypeReplay.count(); i++)
+    {
+        if(m_listChkTypeReplay.at(i)->isChecked())
+            filter.uRange |= 1<<i;
+    }
+    QVariant a;
+    a.setValue(filter);
+    return a;
+}
+
+void MainU1::rpmreplaystart()
+{
+    QVariant pb = ReadLimitReplay();
+    T_FILTER filterPb;
+    filterPb = pb.value<T_FILTER>();
+    UINT32 uTypeNum = 0;
+    for(int i=0; i<32; i++)
+    {
+        if(((filterPb.uRange>>i)&1)==1) uTypeNum++;
+    }
+    CString sz;
+    if((uTypeNum!=1) || ((filterPb.uValid&FIELD__DATA_TYPE)!=FIELD__DATA_TYPE))
+    {
+        emit UImsg(tr("错误：回放时必须打开类型约束，且只可选择一种数据类型。"));
+    }
+    else
+    {
+        this->tf->SetRpmPause()->setChecked(false);
+        this->tf->SetRpmPause()->setChecked(true);
+        this->tf->SetRpmStop()->setChecked(true);
+        emit PlaybackPauseSignal(0);
+        emit PlaybackStartSignal(pb);
+    }
+}
+
+void MainU1::rpmreplaypause()
+{
+    UINT32 uChannel = 0;
+    if(this->tf->SetRpmPause()->isChecked())
+    {
+        for(int i;i < m_listChkReplay.count(); i++)
+        {
+            if(m_listChkReplay.at(i)->isChecked())
+                uChannel |= 1<<i;
+        }
+        this->tf->SetRpmPause()->setChecked(true);
+        this->tf->SetRpmPause()->setText(tr("回放继续"));
+    } else {
+        for(int i=0; i<m_listChkReplay.count(); i++)
+        {
+            if(m_listChkReplay.at(i)->isChecked())
+                uChannel &= ~(1<<i);
+        }
+        this->tf->SetRpmPause()->setChecked(false);
+        this->tf->SetRpmPause()->setText(tr("回放暂停"));
+    }
+    this->tf->SetRpmPause()->setEnabled(true);
+    this->tf->SetRpmStop()->setEnabled(true);
+    emit PlaybackPauseSignal(uChannel);
+}
+
+void MainU1::rpmreplaystop()
+{
+    this->tf->SetRpmPause()->setChecked(false);
+    this->tf->SetRpmStop()->setChecked(false);
+    this->tf->SetRpmStop()->setText(tr("回放暂停"));
+    emit PlaybackPauseSignal(0);
+    emit PlaybackStopSignal();
+}
+
 void MainU1::SelectPageInit()
 {
+    m_listChkSelect << this->tf->SetSlcmChkA() << this->tf->SetSlcmChkB();
+    m_listChkTypeSelect << this->tf->SetSlcmType1() << this->tf->SetSlcmType2() << this->tf->SetSlcmType3()\
+                        << this->tf->SetSlcmType4();
+    this->tf->SetSlcmChnSelect()->setChecked((m_infoStore.m_filterSelect.uValid&FIELD__CHAN) == FIELD__CHAN);
+    slot_slcmChkchnSelSelect();
+    for(int i = 0; i < m_listChkSelect.count(); i++)
+    {
+        m_listChkSelect.at(i)->setChecked((m_infoStore.m_filterSelect.uChannel&(1<<i)) != 0);
+        m_listChkSelect.at(i)->setToolTip(m_ListStrChannel.at(i));
+    }
+    this->tf->SetSlcmTimeSelect()->setChecked((m_infoStore.m_filterSelect.uValid&FIELD__TIME_BEGIN) == FIELD__TIME_BEGIN);
+    slot_slcmChkTimeSelSelect();
+    this->tf->SetSlcmStartTime()->setDateTime(m_infoStore.m_filterSelect.timeBeg);
+    this->tf->SetSlcmEndTime()->setDateTime(m_infoStore.m_filterSelect.timeEnd);
+    slot_slcmChkTypeSelSelect();
+    for(int i = 0; i< m_listChkTypeSelect.count(); i++)
+        m_listChkTypeSelect.at(i)->setChecked((m_infoStore.m_filterSelect.uRange&(1<<i)) != 0);
+}
 
+void MainU1::slot_slcmChkchnSelSelect()
+{
+    bool bChecked = this->tf->SetSlcmChnSelect()->isChecked();
+    QIcon PBSlcmChnSelect;
+    if(bChecked)
+    {
+        PBSlcmChnSelect.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetSlcmChnSelect()->setIcon(PBSlcmChnSelect);
+    } else {
+
+        PBSlcmChnSelect.addFile(":/png/png/cross-128.png");
+        this->tf->SetSlcmChnSelect()->setIcon(PBSlcmChnSelect);
+    }
+    for(int i = 0 ; i < m_listChkSelect.count(); i++)
+        m_listChkSelect.at(i)->setEnabled(bChecked);
+}
+
+void MainU1:: slot_slcmChkTimeSelSelect()
+{
+    bool bChecked = this->tf->SetSlcmTimeSelect()->isChecked();
+    this->tf->SetSlcmStartTime()->setEnabled(bChecked);
+    this->tf->SetSlcmEndTime()->setEnabled(bChecked);
+}
+
+void MainU1::slot_slcmChkTypeSelSelect()
+{
+    bool bChecked = this->tf->SetSlcmTypeSelect()->isChecked();
+    QIcon PBSlcmTypeSelect;
+    if(bChecked)
+    {
+        PBSlcmTypeSelect.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetSlcmTypeSelect()->setIcon(PBSlcmTypeSelect);
+    } else {
+
+        PBSlcmTypeSelect.addFile(":/png/png/cross-128.png");
+        this->tf->SetSlcmTypeSelect()->setIcon(PBSlcmTypeSelect);
+    }
+    for(INT32 i = 0; i < m_listChkTypeSelect.count(); i++)
+        m_listChkTypeSelect.at(i)->setEnabled(bChecked);
+}
+
+void MainU1::slot_slcmSelectA()
+{
+    bool bChecked = this->tf->SetSlcmChkA()->isChecked();
+    QIcon PBslcmSelectA;
+    if(bChecked)
+    {
+        PBslcmSelectA.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetSlcmChkA()->setIcon(PBslcmSelectA);
+    } else {
+        PBslcmSelectA.addFile(":/png/png/cross-128.png");
+        this->tf->SetSlcmChkA()->setIcon(PBslcmSelectA);
+    }
+}
+
+
+void MainU1::slot_slcmSelectB()
+{
+    bool bChecked = this->tf->SetSlcmChkB()->isChecked();
+    QIcon PBslcmSelectB;
+    if(bChecked)
+    {
+        PBslcmSelectB.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetSlcmChkB()->setIcon(PBslcmSelectB);
+    } else {
+        PBslcmSelectB.addFile(":/png/png/cross-128.png");
+        this->tf->SetSlcmChkB()->setIcon(PBslcmSelectB);
+    }
+}
+
+void MainU1::slot_slcmType1()
+{
+    bool bChecked = this->tf->SetSlcmType1()->isChecked();
+    QIcon PBslcmtype1;
+    if(bChecked)
+    {
+        PBslcmtype1.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetSlcmType1()->setIcon(PBslcmtype1);
+    } else {
+        PBslcmtype1.addFile(":/png/png/cross-128.png");
+        this->tf->SetSlcmType1()->setIcon(PBslcmtype1);
+    }
+}
+void MainU1::slot_slcmType2()
+{
+    bool bChecked = this->tf->SetSlcmType2()->isChecked();
+    QIcon PBslcmtype2;
+    if(bChecked)
+    {
+        PBslcmtype2.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetSlcmType2()->setIcon(PBslcmtype2);
+    } else {
+        PBslcmtype2.addFile(":/png/png/cross-128.png");
+        this->tf->SetSlcmType2()->setIcon(PBslcmtype2);
+    }
+}
+void MainU1::slot_slcmType3()
+{
+    bool bChecked = this->tf->SetSlcmType3()->isChecked();
+    QIcon PBslcmtype3;
+    if(bChecked)
+    {
+        PBslcmtype3.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetSlcmType3()->setIcon(PBslcmtype3);
+    } else {
+        PBslcmtype3.addFile(":/png/png/cross-128.png");
+        this->tf->SetSlcmType3()->setIcon(PBslcmtype3);
+    }
+}
+void MainU1::slot_slcmType4()
+{
+    bool bChecked = this->tf->SetSlcmType4()->isChecked();
+    QIcon PBslcmtype4;
+    if(bChecked)
+    {
+        PBslcmtype4.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetSlcmType4()->setIcon(PBslcmtype4);
+    } else {
+        PBslcmtype4.addFile(":/png/png/cross-128.png");
+        this->tf->SetSlcmType4()->setIcon(PBslcmtype4);
+    }
+}
+
+QVariant MainU1::ReadLimitSelect()
+{
+    T_FILTER filter;
+    filter.uFileFlags = 0;
+    filter.uValid = 0;
+    if(this->tf->SetSlcmChnSelect()->isChecked()) filter.uValid |= FIELD__CHAN;
+    filter.uChannel = 0;
+    for(int i=0; i<2; i++)
+    {
+        if(m_listChkSelect.at(i)->isChecked())
+            filter.uChannel |= 1<<(i);
+    }
+
+    if(this->tf->SetSlcmChnSelect()->isChecked()) filter.uValid |= FIELD__TIME_BEGIN | FIELD__TIME_END;
+    filter.timeBeg = this->tf->SetSlcmStartTime()->dateTime();
+    filter.timeEnd = this->tf->SetSlcmEndTime()->dateTime();
+
+    if(this->tf->SetSlcmTypeSelect()->isChecked()) filter.uValid |= FIELD__DATA_TYPE;
+    filter.uRange = 0;
+    for(int i=0; i<m_listChkTypeSelect.count(); i++)
+    {
+        if(m_listChkTypeSelect.at(i)->isChecked())
+            filter.uRange |= 1<<i;
+    }
+
+    QVariant a;
+    a.setValue(filter);
+    return a;
+}
+
+void MainU1::slot_slcmdeletefile()
+{
+    this->tf->SetSlcmDelFile()->setEnabled(false);
+    emit FileDelSignal(ReadLimitSelect());
+    Mysleep(1000);
+    this->tf->SetSlcmDelFile()->setEnabled(m_connectstatus && m_bLogined);
+}
+
+void MainU1::slot_slcminqdir()
+{
+    this->tf->SetCuTableFile()->clear();
+    this->tf->SetCuTableFile()->setRowCount(0);
+    this->tf->SetCuTreeFile()->clear();
+    m_listFile.clear();
+
+    this->tf->SetSlcmInqDir()->setEnabled(true);
+    emit DirSignal(ReadLimitSelect());
+    Mysleep(3000);
+    m_mutexFile.lock();
+    m_mutexFile.unlock();
+    this->tf->SetSlcmInqDir()->setEnabled(m_connectstatus && m_bLogined);
+}
+
+void MainU1::TimerSyncTimeFunction()
+{
+    if(this->tf->SetMgmTimeSync()->isChecked())
+        this->tf->SetMgmTimeEdit()->setDateTime(QDateTime::currentDateTime());
+}
+
+void MainU1::slot_mgmtimesync()
+{
+
+}
+
+void MainU1::slot_mgmsendtime()
+{
+    this->tf->SetMgmSendTime()->setEnabled(false);
+    emit SetTimeSignal( this->tf->SetMgmTimeEdit()->dateTime());
+    Mysleep(500);
+    this->tf->SetMgmSendTime()->setEnabled(true);
+}
+
+void MainU1::slot_mgmselfcheck()
+{
+    this->tf->SetMgmSelfCheck()->setEnabled(false);
+    this->tf->SetCuBitsmall()->setEnabled(false);
+    for(int i = 0; i < this->tf->SetCuListBit()->count(); i++)
+    {
+        this->tf->SetCuListBit()->item(i)->setIcon(QIcon(":/png/png/yellow.png"));
+    }
+    emit MBitSignal();
+
+    Mysleep(500);
+    this->tf->SetMgmSelfCheck()->setEnabled(true);
+    this->tf->SetCuBitsmall()->setEnabled(true);
+}
+
+void MainU1::slot_umcreatusr()
+{
+    this->tf->SetUmCreatUsr()->setEnabled(false);
+    emit UserNewSignal(this->tf->GetUmUsrname(), this->tf->GetUmUsrpswd());
+    Mysleep(500);
+    this->tf->SetUmCreatUsr()->setEnabled(true);
+}
+
+void MainU1::slot_ummodifypswd()
+{
+    this->tf->SetUmModifyPswd()->setEnabled(false);
+    emit UserChgPwSignal(this->tf->GetUmUsrname(), this->tf->GetUmUsrpswd());
+    Mysleep(500);
+    this->tf->SetUmModifyPswd()->setEnabled(true);
+}
+
+void MainU1::slot_umdelusr()
+{
+    this->tf->SetUmDelusr()->setEnabled(false);
+    emit UserDelSignal(this->tf->GetUmUsrname(), this->tf->GetUmUsrpswd());
+    Mysleep(500);
+    this->tf->SetUmDelusr()->setEnabled(true);
+}
+
+void MainU1::slot_spmcleardata()
+{
+    this->tf->SetSpmClearData()->setEnabled(false);
+    emit WipeSignal();
+    Mysleep(5000);
+    this->tf->SetSpmClearData()->setEnabled(true);
+}
+
+void MainU1::slot_spmpoweroff()
+{
+    this->tf->SetSpmPoweroff()->setEnabled(false);
+    emit PowerDownSignal();
+    m_bLogined = false;
+    //uiChgToolEnable(false);
+    Mysleep(5000);
+    m_bManual = false;
+    m_tcpclient->disconnectFromHost();
+    emit UImsg(tr("网络已断开"));
+}
+
+void MainU1::slot_spmsoftdistory()
+{
+    this->tf->SetSpmSoftdistory()->setEnabled(false);
+    emit SelfDestorySignal();
+    m_bLogined = false;
+    //uiChgToolEnable(false);
+    Mysleep(5000);
+}
+
+void MainU1::slot_spmsoftreset()
+{
+    this->tf->SetSpmSoftReset()->setEnabled(false);
+    emit ResetSignal();
+    //uiChgToolEnable(false);
+    m_bLogined = false;
+    Mysleep(5000);
+    m_bManual = false;
+    m_tcpclient->disconnectFromHost();
+    emit UImsg(tr("网络已断开"));
+}
+
+void MainU1::slot_spmupdate()
+{
+    this->tf->SetSpmUpdate()->setEnabled(false);
+    emit UpdateSignal();
+    Mysleep(5000);
+    this->tf->SetSpmUpdate()->setEnabled(true);
 }
 //void MainU1::ChartUpdate(int idx, double dblUsed, double dblUsable)
 //{

@@ -21,6 +21,10 @@ public:
     void Statususr_Change(QString, int);
     QTableWidget* SetTLWDevSta();
     QListWidget *SetLWListBit();
+    QTableWidget* SetTableFile();
+    QTreeWidget* SetTreeFile();
+    QPushButton *Setbitsmall();
+    QListWidget *Setlistbit();
 private:
     Ui::ContentUI *ui;
     QFont *ft;

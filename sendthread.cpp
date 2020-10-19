@@ -179,9 +179,12 @@ BOOL SendThread::SendPacket(void *pBody, UINT32 uSize, UINT16 uCmd)
             pTail->tag_end = RW_TAG_END;
 
             m_response.AddCmd(pHead->cmd_id, pHead->cmd_seq);
-            if(-1 == m_tcpClient->write((const char*)buf, pHead->pkt_len))
-            {
-                bRes = FALSE;
+            if (m_tcpClient) {
+                if(-1 == m_tcpClient->write((const char*)buf, pHead->pkt_len))
+                {
+                    bRes = FALSE;
+                }
+
             }
         }
     }

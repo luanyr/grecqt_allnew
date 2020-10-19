@@ -24,6 +24,7 @@
 #include <QTimer>
 #include <QTcpSocket>
 #include <QFrame>
+#include <QVariant>
 #include <QTextBrowser>
 #include "recvthread.h"
 #include "sendthread.h"
