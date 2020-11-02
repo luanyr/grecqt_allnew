@@ -54,6 +54,14 @@ void ContentUI::TW_init()
     PB_bitsmall->move(280, 20);
     PB_bitsmall->setIcon(PB_bitsmallicon);
     PB_bitsmall->setIconSize(QSize(25, 25));
+
+    WGTChart = new QWidget(W_Selfcheck);
+    WGTChart->move(0, 150);
+    WGTChart->resize(280, 300);
+    VBLChart = new QVBoxLayout(WGTChart);
+    VBLChart->setSpacing(2);
+    VBLChart->setSizeConstraint(QLayout::SetMaximumSize);
+
     TW_DevStaCap->insertTab(1, W_Selfcheck, tr("自检和容量"));
 }
 
@@ -215,4 +223,9 @@ void ContentUI::slot_emitPbBitSmall()
 QTabWidget *ContentUI::SetDevStaCap()
 {
     return this->TW_DevStaCap;
+}
+
+QVBoxLayout* ContentUI::SetChart()
+{
+    return this->VBLChart;
 }

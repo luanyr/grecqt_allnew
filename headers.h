@@ -26,6 +26,7 @@
 #include <QFrame>
 #include <QVariant>
 #include <QTextBrowser>
+#include <QVBoxLayout>
 #include "recvthread.h"
 #include "sendthread.h"
 #include "qchartviewer.h"

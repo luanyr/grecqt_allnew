@@ -727,3 +727,8 @@ void Top_Form::slot_cuhandlesignal(int type)
  {
      return this->cu->SetDevStaCap();
  }
+
+ QVBoxLayout *Top_Form::SetCuChart()
+ {
+     return this->cu->SetChart();
+ }

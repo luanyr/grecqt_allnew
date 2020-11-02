@@ -89,6 +89,7 @@ public:
     QToolButton *SetSpmSoftdistory();
     QProgressBar *SetCuProgress();
     QTabWidget *SetCuDevStaCap();
+    QVBoxLayout *SetCuChart();
 private:
     Ui::Top_Form *ui;
     startmenu_init      *sm;

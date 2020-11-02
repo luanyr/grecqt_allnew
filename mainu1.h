@@ -206,8 +206,10 @@ private:
     BOOL m_bMounted;
     UINT m_uMountMode;
     CStoreInfo m_infoStore;
+    QMenu *m_pMenu;
     QLabel *m_labelStatUser;
     QStringList m_listStrBit;
+    QStringList m_listStrFile;
     QStringList m_ListStrChannel;
     QStringList m_listStrLink;
     QList<QLabel*> m_listStatLink;
@@ -235,6 +237,7 @@ private:
     void RecPageInit();
     void ReplayPageInit();
     void SelectPageInit();
+    void FilePageInit();
     void OtherInit();
     void cmsetdefault();
     void cmconfirm();
@@ -243,7 +246,7 @@ private:
     void FunInIdleEnable(bool bEnable);
     void TimerHeartBeatFunction();
     void ChartUpdate(int idx, double dblUsed, double dblUsable);
-
+    void StatusChartInit();
     void InsertTreeItem(CFileAttrib *pfileAttribSrc, INT32 nTier, QTreeWidgetItem *pParent);
     QVariant ReadLimitReplay();
     QVariant ReadLimitSelect();
@@ -293,6 +296,7 @@ signals:
     void ReportSignal();
     void SetCurVecSignal(double dblLon, double dblLat, double dblDir);
     void MenuActionSignal(UINT32 uCmdTm, QStringList listFile);
+
 private slots:
     void slot_havaconnected();
     void slot_havedisconnected();
@@ -348,6 +352,9 @@ private slots:
     void BitSlot(QByteArray);
     void WipeSlot(QByteArray data);
     void WorkStatusSlot(QByteArray data);
+    void MenuFileSlot();
+    void CustomMenuRequested(QPoint);
+    void slot_CuTreeFileItemSelection();
 public slots:
     void slot_handlesignal(int type);
     void slot_closeapp();

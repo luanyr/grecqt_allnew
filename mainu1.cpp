@@ -97,8 +97,10 @@ void MainU1::UiInit()
     m_listStrBit << m_ListStrChannel << tr("磁盘箱") << tr("板载电子盘") << tr("扩展电子盘");;
 
     StatusTableInit();
+    StatusChartInit();
     BitListInit();
     StartPageInit();
+    FilePageInit();
     ReplayPageInit();
     SelectPageInit();
     OtherInit();
@@ -362,6 +364,24 @@ void MainU1::ChannelPageInit()
         this->tf->setchannel()->setItem(1, i, item1);
         this->tf->setchannel()->setColumnWidth(i, (this->tf->setchannel()->width()-this->tf->setchannel()->verticalHeader()->width()-60)/this->tf->setchannel()->columnCount());
     }
+}
+
+void MainU1::StatusChartInit()
+{
+    QScrollArea *scrollArea1 = new QScrollArea(this);
+    scrollArea1->setPalette(QColor(255, 255, 255));
+    scrollArea1->setWidgetResizable(true);
+    this->tf->SetCuChart()->addWidget(scrollArea1);
+    QWidget *scrollAreaContent1 = new QWidget();
+    scrollArea1->setWidget(scrollAreaContent1);
+    m_chartViewers[0] = new QChartViewer(scrollAreaContent1);
+    QScrollArea *scrollArea2 = new QScrollArea(this);
+    scrollArea2->setPalette(QColor(255, 255, 255));
+    scrollArea2->setWidgetResizable(true);
+    this->tf->SetCuChart()->addWidget(scrollArea2);
+    QWidget *scrollAreaContent2 = new QWidget();
+    scrollArea2->setWidget(scrollAreaContent2);
+    m_chartViewers[1] = new QChartViewer(scrollAreaContent2);
 }
 
 void MainU1::StatusTableInit()
@@ -839,8 +859,9 @@ void MainU1::AllCmdUiSlot(QByteArray head, QByteArray data)
                  sz = QString(tr("软销毁进行中(%1%)...")).arg(pMsgr->progress);
                  break;
              }
-                if(!sz.isEmpty()) emit UImsg(sz);
+
         }
+    if(!sz.isEmpty()) emit UImsg(sz);
     }
 
 void MainU1::rpmchkChnSelReplay()
@@ -1084,6 +1105,109 @@ void MainU1::SelectPageInit()
     slot_slcmChkTypeSelSelect();
     for(int i = 0; i< m_listChkTypeSelect.count(); i++)
         m_listChkTypeSelect.at(i)->setChecked((m_infoStore.m_filterSelect.uRange&(1<<i)) != 0);
+}
+
+void MainU1::FilePageInit()
+{
+    m_pMenu = NULL;
+    this->tf->SetCuTreeFile()->setHeaderLabels(QStringList()<<tr("目录项"));
+    this->tf->SetCuTreeFile()->setColumnCount(1);
+    this->tf->SetCuTreeFile()->setSortingEnabled(true);
+    this->tf->SetCuTreeFile()->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_listStrFile << tr("名称") << tr("修改时间") << tr("类型") << tr("大小")
+                 << tr("标志位");
+    this->tf->SetCuTableFile()->setColumnCount(m_listStrFile.count());
+    this->tf->SetCuTableFile()->setHorizontalHeaderLabels(m_listStrFile);
+    this->tf->SetCuTableFile()->setSortingEnabled(false);
+    this->tf->SetCuTableFile()->setColumnWidth(0, 420);
+    this->tf->SetCuTableFile()->setColumnWidth(1, 160);
+    this->tf->SetCuTableFile()->setColumnWidth(2, 60);
+    this->tf->SetCuTableFile()->setColumnWidth(3, 120);
+    this->tf->SetCuTableFile()->setColumnWidth(4, 80);
+
+    this->tf->SetCuTableFile()->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    this->tf->SetCuTableFile()->setSelectionBehavior(QAbstractItemView::SelectRows);
+    this->tf->SetCuTableFile()->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    this->tf->SetCuTableFile()->setAlternatingRowColors(true);
+
+    setAcceptDrops(true);
+    this->tf->SetCuTableFile()->setDragDropMode(QAbstractItemView::DragDrop);
+    this->tf->SetCuTableFile()->setDragEnabled(true);
+    this->tf->SetCuTableFile()->setDropIndicatorShown(true);
+
+    this->tf->SetCuTableFile()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this->tf->SetCuTableFile(), SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(CustomMenuRequested(QPoint)));
+
+}
+
+void MainU1::CustomMenuRequested(QPoint pos)
+{
+    if(m_pMenu == NULL)
+    {
+        m_pMenu = new QMenu(this);
+        QFont font("宋体",12,QFont::Normal);
+        m_pMenu->setFont(font);
+
+        QAction* actionPlay = new QAction(tr("回放(&P)"), this);
+        actionPlay->setIcon(QIcon(":/png/png/play-128.png"));
+        actionPlay->setData(QVariant::fromValue(TMCMD_PB));
+        m_pMenu->addAction(actionPlay);
+
+        m_pMenu->addSeparator();
+        QAction* actionDel = new QAction(tr("删除文件(&D)"), this);
+          actionDel->setIcon(QIcon(":/png/png/Trash Empty.png"));
+          actionDel->setData(QVariant::fromValue(TMCMD_DEL));
+          m_pMenu->addAction(actionDel);
+
+          m_pMenu->addSeparator();
+
+          QAction* actionWpOn = new QAction(tr("打开写保护(&W)"), this);
+          actionWpOn->setIcon(QIcon(":/png/png/lock-128.png"));
+          actionWpOn->setData(QVariant::fromValue(TMCMD_WPON));
+          m_pMenu->addAction(actionWpOn);
+
+          QAction* actionWpOff = new QAction(tr("关闭写保护(&Q)"), this);
+          actionWpOff->setIcon(QIcon(":/png/png/unlock-128.png"));
+          actionWpOff->setData(QVariant::fromValue(TMCMD_WPOFF));
+          m_pMenu->addAction(actionWpOff);
+
+          m_pMenu->addSeparator();
+
+          QAction* actionRefresh = new QAction(tr("刷新(&R)"), this);
+          actionRefresh->setIcon(QIcon(":/png/png/sinchronize-128.png"));
+          actionRefresh->setData(QVariant::fromValue(TMCMD_DIR));
+          m_pMenu->addAction(actionRefresh);
+
+          connect (actionPlay, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+          connect (actionDel, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+          connect (actionWpOn, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+          connect (actionWpOff, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+          connect (actionRefresh, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+    }
+    m_pMenu->exec(this->tf->SetCuTableFile()->viewport()->mapFromGlobal(pos));
+}
+
+void MainU1::MenuFileSlot()
+{
+    QAction* action = qobject_cast<QAction*> (sender());
+    if (action == 0) return;
+
+    UINT32 uCmdTm = action->data().toUInt();
+    if(uCmdTm == TMCMD_DIR)
+    {
+       slot_slcminqdir();
+    }
+    else
+    {
+        QList<QTableWidgetItem *> listItem = this->tf->SetCuTableFile()->selectedItems();
+        QStringList listfile;
+        for(int i = 0; i < listItem.count(); i++)
+        {
+            INT col = this->tf->SetCuTableFile()->column(listItem.at(i));
+            if(col == 0) listfile << listItem.at(i)->text();
+        }
+        emit MenuActionSignal(uCmdTm, listfile);
+    }
 }
 
 void MainU1::slot_slcmChkchnSelSelect()
@@ -1441,9 +1565,9 @@ void MainU1::ChartUpdate(int idx, double dblUsed, double dblUsable)
 
     // Add a title to the pie chart
     if(idx==0)
-        c->addTitle(QTextCodec::codecForName("UTF-8")->fromUnicode("设备容量").constData(), "simsun.ttc", 12)->setMargin(0, 0, 4, 0);
+        c->addTitle(QTextCodec::codecForName("UTF-8")->fromUnicode(tr("设备容量")).constData(), "simsun.ttc", 12)->setMargin(0, 0, 4, 0);
     else
-        c->addTitle(QTextCodec::codecForName("UTF-8")->fromUnicode("磁盘箱容量").constData(), "simsun.ttc", 12)->setMargin(0, 0, 4, 0);
+        c->addTitle(QTextCodec::codecForName("UTF-8")->fromUnicode(tr("磁盘箱容量")).constData(), "simsun.ttc", 12)->setMargin(0, 0, 4, 0);
 
     c->setLabelStyle( "simsun.ttc",12,0x20000000);
     //c->setDefaultFonts("simsun.ttc");
@@ -1649,7 +1773,7 @@ void MainU1::WorkStatusSlot(QByteArray data)
 
 void MainU1::uiChgToolEnable(bool bEnable)
 {
-#if 0
+#if 1
     this->tf->SetSmConnect()->setEnabled(!m_connectstatus);
     this->tf->SetSmDisconnect()->setEnabled(m_connectstatus);
     this->tf->SetSmLogin()->setEnabled(m_connectstatus && !m_bLogined && bEnable);
@@ -1729,7 +1853,7 @@ void MainU1::DirSlot(QList<CFileAttrib> list)
                     {
                         nTier = 2;
                         pParent = this->tf->SetCuTreeFile()->topLevelItem(j)->child(m);
-                        for(int n=0; this->tf->SetCuTreeFile()->topLevelItem(j)->child(m)->childCount(); n++)
+                        for(int n=0; n < this->tf->SetCuTreeFile()->topLevelItem(j)->child(m)->childCount(); n++)
                         {
                             if(!fDest.ConvertFromFilename(this->tf->SetCuTreeFile()->topLevelItem(j)->child(m)->child(n)->data(0, Qt::UserRole).toString()))
                             {
@@ -1783,4 +1907,9 @@ void MainU1::InsertTreeItem(CFileAttrib *pfileAttribSrc, INT32 nTier, QTreeWidge
         Q_ASSERT(0);
         break;
     }
+}
+
+void MainU1::slot_CuTreeFileItemSelection()
+{
+
 }

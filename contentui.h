@@ -27,6 +27,7 @@ public:
     QListWidget *Setlistbit();
     QProgressBar *SetProgress();
     QTabWidget *SetDevStaCap();
+    QVBoxLayout *SetChart();
 private:
     Ui::ContentUI *ui;
     QFont *ft;
@@ -47,6 +48,8 @@ private:
     QLabel *LAstatusr;
     QLabel *LAstatwork;
     QProgressBar *progress;
+    QVBoxLayout *VBLChart;
+    QWidget *WGTChart;
     void TW_init();
     void FileView_init();
     void StatusbarInit();
