@@ -75,6 +75,8 @@ void ContentUI::FileView_init()
     TB_liststatus = new QTextBrowser(this);
     TB_liststatus->resize(160, 500);
     TB_liststatus->move(1200, 20);
+    connect(this->TRW_treefile, SIGNAL(itemSelectionChanged()), this, SLOT(slot_emittrwitemchange()));
+    connect(this->PB_bitsmall, SIGNAL(clicked(bool)), this, SLOT(slot_emitPbBitSmall()));
 }
 
 void ContentUI::ListShowStatus(QString msg)
@@ -103,7 +105,7 @@ void ContentUI::StatusbarInit()
     statusBar->addWidget(separator1);
 
     LAstatusr = new QLabel;
-    //LAstatusr->setMinimumSize(PB_statnet->sizeHint());
+    LAstatusr->setMinimumSize(LAstatusr->sizeHint());
     LAstatusr->setAlignment(Qt::AlignLeft);
     LAstatusr->setText(tr("当前用户:         "));
     statusBar->addWidget(LAstatusr);
@@ -113,7 +115,7 @@ void ContentUI::StatusbarInit()
     statusBar->addWidget(separator2);
 
     LAstatwork = new QLabel;
-    //LAstatwork->setMinimumSize(PB_statnet->sizeHint());
+    LAstatwork->setMinimumSize(LAstatwork->sizeHint());
     LAstatwork->setAlignment(Qt::AlignLeft);
     LAstatwork->setText(tr("工作状态: 空闲"));
     statusBar->addWidget(LAstatwork);
@@ -193,4 +195,24 @@ QPushButton *ContentUI::Setbitsmall()
 QListWidget *ContentUI::Setlistbit()
 {
     return this->LW_listbit;
+}
+
+QProgressBar *ContentUI::SetProgress()
+{
+    return this->progress;
+}
+
+void ContentUI::slot_emittrwitemchange()
+{
+    emit SIGNAL_CuType(cusignal_trwitemselectionchange);
+}
+
+void ContentUI::slot_emitPbBitSmall()
+{
+    emit SIGNAL_CuType(cusignal_pbpbbitsmall);
+}
+
+QTabWidget *ContentUI::SetDevStaCap()
+{
+    return this->TW_DevStaCap;
 }

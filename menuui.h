@@ -63,6 +63,9 @@
 #define spmsignal_poweroff          0x02
 #define spmsignal_update            0x03
 #define spmsignal_spftdistory       0x04
+
+#define cusignal_trwitemselectionchange   0x00
+#define cusignal_pbpbbitsmall             0x01
 namespace Ui {
 class MenuUI;
 }
@@ -95,6 +98,10 @@ public:
     QLineEdit* GetPortEdit();
     QLineEdit *GetUserNameEdit();
     QLineEdit *GetUserpswdEdit();
+    QToolButton *SetTbConnect();
+    QToolButton *SetTbDisconnect();
+    QToolButton *SetTblogin();
+    QToolButton *SetTblogout();
 private:
     QLabel *LAipaddr;
     QLabel *LAport;
@@ -131,6 +138,7 @@ public:
     QString GetFileszUint();
     QToolButton *SetRecStart();
     QToolButton *SetRecStop();
+    QToolButton *SetRecFilesz();
 private:
     QLineEdit *LEfilesz;
     QComboBox *CBfilesz;

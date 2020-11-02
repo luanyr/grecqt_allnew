@@ -25,6 +25,8 @@ public:
     QTreeWidget* SetTreeFile();
     QPushButton *Setbitsmall();
     QListWidget *Setlistbit();
+    QProgressBar *SetProgress();
+    QTabWidget *SetDevStaCap();
 private:
     Ui::ContentUI *ui;
     QFont *ft;
@@ -49,7 +51,10 @@ private:
     void FileView_init();
     void StatusbarInit();
 public slots:
-
+    void slot_emittrwitemchange();
+    void slot_emitPbBitSmall();
+signals:
+    void SIGNAL_CuType(int);
 
 };
 

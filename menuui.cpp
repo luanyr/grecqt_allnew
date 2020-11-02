@@ -130,6 +130,26 @@ QString startmenu_init::Getipport()
     return this->LEport->text();
 }
 
+QToolButton* startmenu_init::SetTbConnect()
+{
+    return this->TBconnect;
+}
+
+QToolButton* startmenu_init::SetTbDisconnect()
+{
+    return this->TBdisconnect;
+}
+
+QToolButton* startmenu_init::SetTblogin()
+{
+    return this->TBlogin;
+}
+
+QToolButton* startmenu_init::SetTblogout()
+{
+    return this->TBlogout;
+}
+
 void startmenu_init::slot_emitconnnect()
 {
     emit SIGNAL_Pbtype(PBconnect);
@@ -281,6 +301,11 @@ QToolButton *recordmenu_init::SetRecStart()
 QToolButton *recordmenu_init::SetRecStop()
 {
     return this->TBRecStop;
+}
+
+QToolButton *recordmenu_init::SetRecFilesz()
+{
+    return this->TBfilesz;
 }
 
 QPushButton *recordmenu_init::SetchkRec_A()

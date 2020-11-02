@@ -1,6 +1,9 @@
 #include "mainu1.h"
 #include "ui_mainu1.h"
 
+#define BIT_NUM     (16)
+#define STOR_NUM    (2)
+
 MainU1::MainU1(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MainU1)
@@ -15,41 +18,60 @@ MainU1::MainU1(QWidget *parent) :
     tf = new Top_Form(this);
     tf->move(5, 5);
     UiInit();
-    connect(this, SIGNAL(UImsg(QString)), this, SLOT(slot_UIstatusshow(QString)));
-    connect(this->tf, SIGNAL(signals_pbtype(int)), this, SLOT(slot_handlesignal(int)));
-    connect(this->tf, SIGNAL(signals_cmtype(int)), this, SLOT(slot_handlecmsignals(int)));
     connect(this->m_tcpclient, SIGNAL(connected()), this, SLOT(slot_havaconnected()));
     connect(this->m_tcpclient, SIGNAL(disconnected()), this, SLOT(slot_havedisconnected()));
-    connect(this, SIGNAL(Signal_Usrlogin(QString, QString)), this->m_pThrdSend, SLOT(UserLoginSlot(QString,QString)));
-    connect(this, SIGNAL(Signal_Usrlogout()), this->m_pThrdSend, SLOT(UserQuitSlot()));
-    connect(this->m_pThrdRecv, SIGNAL(UserLoginSignal(QByteArray)), this, SLOT(slot_userlogin(QByteArray)));
-    connect(this->m_pThrdRecv, SIGNAL(InqStatusSignal(QByteArray)), this, SLOT(slot_inqstatus(QByteArray)));
-    connect(this, SIGNAL(Signal_InqStatus()), this->m_pThrdSend, SLOT(InqStatusSlot()));
-    connect(this->m_pThrdSend, SIGNAL(SendMsgToui(QString)), this, SLOT(slot_UIstatusshow(QString)));
-    connect(this->tf, SIGNAL(signals_rcdmtype(int)), this, SLOT(slot_handlercdmsignal(int)));
-    connect(this->tf, SIGNAL(signals_rpmtype(int)), this, SLOT(slot_handlerpmsignals(int)));
-    connect(this, SIGNAL(Signal_Heartbeat()), this->m_pThrdSend, SLOT(HeartBeatSlot()));
-    connect(this, SIGNAL(SetfileszSignal(UINT32)), m_pThrdSend, SLOT(SetfileSzSlot(UINT32)));
-    connect(this, SIGNAL(RecConSignal(UINT32)), m_pThrdSend, SLOT(RecConSlot(UINT32)));
-    connect(this, SIGNAL(PlaybackPauseSignal(UINT32)), m_pThrdSend, SLOT(PlaybackPauseSlot(UINT32)));
-    connect(this, SIGNAL(PlaybackStartSignal(QVariant)), m_pThrdSend, SLOT(PlaybackStartSlot(QVariant)));
-    connect(this, SIGNAL(PlaybackStopSignal()), m_pThrdSend, SLOT(PlaybackStopSlot()));
-    connect(this->tf, SIGNAL(signals_smtype(int)), this, SLOT(slot_handlesmsignals(int)));
-    connect(this, SIGNAL(FileDelSignal(QVariant)), m_pThrdSend, SLOT(FileDelSlot(QVariant)));
-    connect(this->tf, SIGNAL(signals_mgmtype(int)), this, SLOT(slot_handlemgmsignals(int)));
-    connect(this->tf, SIGNAL(signals_umtype(int)), this, SLOT(slot_handleumsignals(int)));
-    connect(this->tf, SIGNAL(signals_spmtype(int)), this, SLOT(slot_handlespmsignals(int)));
-    connect(m_pThrdRecv, SIGNAL(DirSignal(QList<CFileAttrib>)), this, SLOT(DirSlot(QList<CFileAttrib>)), Qt::DirectConnection);
+    connect(this, SIGNAL(UImsg(QString)), this, SLOT(slot_UIstatusshow(QString)));
+
+    connect(this, SIGNAL(HeartBeatSignal()), m_pThrdSend, SLOT(HeartBeatSlot()));
     connect(this, SIGNAL(SetTimeSignal(QDateTime)), m_pThrdSend, SLOT(SetTimeSlot(QDateTime)));
     connect(this, SIGNAL(MBitSignal()), m_pThrdSend, SLOT(BitSlot()));
+    connect(this, SIGNAL(WipeSignal()), m_pThrdSend, SLOT(WipeSlot()));
+    connect(this, SIGNAL(Signal_Usrlogout()), this->m_pThrdSend, SLOT(UserQuitSlot()));
+    connect(this, SIGNAL(Signal_Usrlogin(QString, QString)), this->m_pThrdSend, SLOT(UserLoginSlot(QString,QString)));
     connect(this, SIGNAL(UserNewSignal(QString, QString)), m_pThrdSend, SLOT(UserNewSlot(QString, QString)));
     connect(this, SIGNAL(UserChgPwSignal(QString, QString)), m_pThrdSend, SLOT(UserChgPwSlot(QString, QString)));
     connect(this, SIGNAL(UserDelSignal(QString, QString)), m_pThrdSend, SLOT(UserDelSlot(QString, QString)));
-    connect(this, SIGNAL(WipeSignal()), m_pThrdSend, SLOT(WipeSlot()));
+     connect(this, SIGNAL(RecConSignal(UINT32)), m_pThrdSend, SLOT(RecConSlot(UINT32)));
+    connect(this, SIGNAL(Signal_InqStatus()), this->m_pThrdSend, SLOT(InqStatusSlot()));
+    connect(this, SIGNAL(Signal_Heartbeat()), this->m_pThrdSend, SLOT(HeartBeatSlot()));
+    connect(this, SIGNAL(RecModeSignal(UINT32)), m_pThrdSend, SLOT(RecModeSlot(UINT32)));
+    connect(this, SIGNAL(WriteProtectSignal(QVariant)), m_pThrdSend, SLOT(WriteProtectSlot(QVariant)));
+    connect(this, SIGNAL(WriteProtectOffSignal(QVariant)), m_pThrdSend, SLOT(WriteProtectOffSlot(QVariant)));
+    connect(this, SIGNAL(UnInstStartSignal(QVariant)), m_pThrdSend, SLOT(UnInstStartSlot(QVariant)));
+    connect(this, SIGNAL(UnInstStopSignal()), m_pThrdSend, SLOT(UnInstStopSlot()));
+    connect(this, SIGNAL(PlaybackPauseSignal(UINT32)), m_pThrdSend, SLOT(PlaybackPauseSlot(UINT32)));
+    connect(this, SIGNAL(PlaybackStartSignal(QVariant)), m_pThrdSend, SLOT(PlaybackStartSlot(QVariant)));
+    connect(this, SIGNAL(PlaybackStopSignal()), m_pThrdSend, SLOT(PlaybackStopSlot()));
+    connect(this, SIGNAL(DirSignal(QVariant)), m_pThrdSend, SLOT(DirSlot(QVariant)), Qt::DirectConnection);
+    connect(this, SIGNAL(FileDelSignal(QVariant)), m_pThrdSend, SLOT(FileDelSlot(QVariant)));
     connect(this, SIGNAL(UpdateSignal()), m_pThrdSend, SLOT(UpdateSlot()));
     connect(this, SIGNAL(ResetSignal()), m_pThrdSend, SLOT(ResetSlot()));
     connect(this, SIGNAL(SelfDestorySignal()), m_pThrdSend, SLOT(SelfDestorySlot()));
     connect(this, SIGNAL(PowerDownSignal()), m_pThrdSend, SLOT(PowerDownSlot()));
+    connect(this, SIGNAL(UnmountSignal(bool)), m_pThrdSend, SLOT(UnmountSlot(bool)));
+    connect(this, SIGNAL(MountSignal(bool)), m_pThrdSend, SLOT(MountSlot(bool)));
+    connect(this, SIGNAL(SetfileszSignal(UINT32)), m_pThrdSend, SLOT(SetfileSzSlot(UINT32)));
+
+    connect(this->m_pThrdRecv, SIGNAL(DirSignal(QList<CFileAttrib>)), this, SLOT(DirSlot(QList<CFileAttrib>)), Qt::DirectConnection);
+    connect(this->m_pThrdRecv, SIGNAL(UserLoginSignal(QByteArray)), this, SLOT(slot_userlogin(QByteArray)));
+    connect(this->m_pThrdRecv, SIGNAL(InqStatusSignal(QByteArray)), this, SLOT(slot_inqstatus(QByteArray)));
+    connect(this->m_pThrdRecv, SIGNAL(RecvMsgToui(QString)),this,SLOT(slot_UIstatusshow(QString)));
+    connect(this->m_pThrdRecv, SIGNAL(AllAckSignal(QByteArray)),this,SLOT(AllAckSlot(QByteArray)));
+    connect(this->m_pThrdRecv, SIGNAL(AllCmdUiSignal(QByteArray, QByteArray)), this, SLOT(AllCmdUiSlot(QByteArray, QByteArray)));
+    connect(this->m_pThrdRecv, SIGNAL(BitSignal(QByteArray)), this, SLOT(BitSlot(QByteArray)));
+    connect(this->m_pThrdRecv, SIGNAL(WipeSignal(QByteArray)), this, SLOT(WipeSlot(QByteArray)));
+    connect(this->m_pThrdSend, SIGNAL(SendMsgToui(QString)), this, SLOT(slot_UIstatusshow(QString)));
+    connect(this->tf, SIGNAL(signals_pbtype(int)), this, SLOT(slot_handlesignal(int)));
+    connect(this->tf, SIGNAL(signals_cmtype(int)), this, SLOT(slot_handlecmsignals(int)));
+    connect(this->tf, SIGNAL(signals_rcdmtype(int)), this, SLOT(slot_handlercdmsignal(int)));
+    connect(this->tf, SIGNAL(signals_rpmtype(int)), this, SLOT(slot_handlerpmsignals(int)));
+    connect(this->tf, SIGNAL(signals_smtype(int)), this, SLOT(slot_handlesmsignals(int)));
+    connect(this->tf, SIGNAL(signals_mgmtype(int)), this, SLOT(slot_handlemgmsignals(int)));
+    connect(this->tf, SIGNAL(signals_umtype(int)), this, SLOT(slot_handleumsignals(int)));
+    connect(this->tf, SIGNAL(signals_spmtype(int)), this, SLOT(slot_handlespmsignals(int)));
+    connect(this->tf, SIGNAL(signals_cutype(int)), this, SLOT(slot_handlecusignals(int)));
+
+
 }
 
 MainU1::~MainU1()
@@ -81,6 +103,8 @@ void MainU1::UiInit()
     SelectPageInit();
     OtherInit();
     ChannelPageInit();
+    RecPageInit();
+    uiChgToolEnable(false);
 }
 
 
@@ -93,14 +117,35 @@ void MainU1::slot_havaconnected()
     m_pThrdRecv->setPriority(QThread::HighPriority);
     this->tf->CuStatusNet(statusnet_connected);
     emit UImsg(tr("成功连接"));
+    m_connectstatus = true;
+    m_bLogined = false;
+    uiChgToolEnable(m_connectstatus);
+    m_bAlive = true;
+    m_bNeedRecMode = true;
+    QTimer *pTimer = new QTimer();
+    connect(pTimer, SIGNAL(timeout()), this, SLOT(TimerHeartBeatFunction()));
+    pTimer->start(1000);
+    userlogin();//连接上后自动登陆
+}
 
+void MainU1::TimerHeartBeatFunction()
+{
+    emit HeartBeatSignal();
 }
 
 void MainU1::slot_havedisconnected()
 {
     m_connectstatus = false;
     this->tf->CuStatusNet(statusnet_disconnected);
+    uiChgToolEnable(false);
     emit UImsg(tr("断开连接"));
+    if(!m_bManual)
+    {
+        emit UImsg(tr("TCP连接失败,正在重试")+QString::number(m_uRetry,10)+tr("次"));
+        Mysleep(5000);
+        m_uRetry++;
+        connectserver();
+    }
 }
 
 void MainU1::slot_UIstatusshow(QString msg)
@@ -123,18 +168,29 @@ void MainU1::connectserver()
 
 void MainU1::disconnectserver()
 {
+    m_bManual = true;
     if(m_connectstatus)
         m_tcpclient->disconnectFromHost();
 }
 
+void MainU1::displayError()
+{
+    emit UImsg(tr("网络错误原因：") + m_tcpclient->errorString());
+    emit UImsg(tr("TCP连接失败,正在重试")+QString::number(m_uRetry,10)+tr("次"));
+    Mysleep(5000);
+    connectserver();
+}
 
 void MainU1::slot_handlesignal(int type)
 {
     switch (type) {
     case PBconnect:
+        m_bManual = false;
+        m_uRetry = 1;
         connectserver();
         break;
     case PBdisconnect:
+
         disconnectserver();
         break;
     case PBuserlogin:
@@ -173,6 +229,7 @@ void MainU1::userlogout()
     }
     this->tf->CuStatusUsr(QString(" "), statususr_logout);
     m_bLogined = false;
+    uiChgToolEnable(false);
     emit Signal_Usrlogout();
 }
 
@@ -184,10 +241,12 @@ void MainU1::slot_userlogin(QByteArray data)
         this->tf->CuStatusUsr(m_infoStore.m_strCurUser, statususr_login);
         emit UImsg(tr("用户")+m_infoStore.m_strCurUser+tr("登录成功。"));
         m_bLogined = true;
-        emit Signal_Heartbeat();
+        uiChgToolEnable(true);
+
     } else {
         m_bLogined = false;
         emit UImsg(tr("用户")+m_infoStore.m_strCurUser+tr("登录失败！错误代码：%1。").arg(pMsg->result));
+        uiChgToolEnable(false);
     }
 }
 
@@ -242,6 +301,16 @@ void MainU1::UpdateChannelName()
     for(int i=0; i<m_listChkSelect.count(); i++)
     {
         m_listChkSelect.at(i)->setToolTip(m_ListStrChannel.at(i));
+    }
+}
+
+void MainU1::UpdateProgressSlot(bool bShow, UINT32 percent)
+{
+    if(bShow) {
+        this->tf->SetCuProgress()->show();
+        this->tf->SetCuProgress()->setValue(percent);  // 当前进度
+    } else {
+        this->tf->SetCuProgress()->hide();
     }
 }
 
@@ -309,6 +378,15 @@ void MainU1::StatusTableInit()
     this->tf->SetTlwDevSta()->setSelectionBehavior(QAbstractItemView::SelectRows);
     this->tf->SetTlwDevSta()->setSelectionMode(QAbstractItemView::SingleSelection);
     this->tf->SetTlwDevSta()->setAlternatingRowColors(true);
+
+    for(int i = 0; i < m_listStrLink.count(); i++)
+    {
+        QLabel *pLabel = new QLabel;
+        pLabel->setMinimumSize(pLabel->sizeHint());
+        pLabel->setPixmap(QPixmap(":/png/png/ledyellow.png"));
+        pLabel->setToolTip(m_listStrLink.at(i)+ ": " + tr("未定义"));
+        m_listStatLink << pLabel;
+    }
 }
 
 void MainU1::BitListInit()
@@ -532,6 +610,20 @@ void MainU1::slot_handlespmsignals(int type)
         break;
     }
 }
+
+void MainU1::slot_handlecusignals(int type)
+{
+    switch (type) {
+    case cusignal_trwitemselectionchange:
+        slot_cutrwitemselectionchange();
+        break;
+    case cusignal_pbpbbitsmall:
+        slot_cupbbitsmall();
+        break;
+    default:
+        break;
+    }
+}
 void MainU1::slot_rcdmSetFilesz()
 {
     UINT32 filesz = this->tf->GetRcdmFilesz();
@@ -602,6 +694,154 @@ void MainU1::OtherInit()
     QRegExp double_rx90("^-?(90(\\.0{1,5})?|[1-8]?\\d(\\.\\d{1,5})?)$");
     QRegExp double_rx360("^((([0-2])?\\d{1,2}|3[0-5]\\d)(\\.\\d{1})?|360(\\.0{1})?)$");
 }
+
+void MainU1::AllAckSlot(QByteArray head)
+{
+    m_bAlive = true;
+}
+
+void MainU1::BitSlot(QByteArray data)
+{
+    RW_MSGR__ADM_SELFDIAG *pData = (RW_MSGR__ADM_SELFDIAG *)data.data();
+    int idx = 0;
+    this->tf->SetCuDevStaCap()->setCurrentIndex(1);
+    for(int i = 0; i < BIT_NUM;i++)
+    {
+        UINT32 *pU = (UINT32*)&pData->chan_stat;
+        QListWidgetItem *pItem = this->tf->SetCuListBit()->item(idx);
+        QString sz;
+        switch ((*pU>>(i*2)) & 0x3) {
+        case LINKSTAT__DOWN:
+             sz = tr("无连接");
+             pItem->setIcon(QIcon(":/png/png/blue.png"));
+             break;
+         case LINKSTAT__ERROR:
+             sz = tr("有故障");
+             pItem->setIcon(QIcon(":/png/png/red.png"));
+             break;
+         case LINKSTAT__UP:
+             sz = tr("正常");
+             pItem->setIcon(QIcon(":/png/png/green.png"));
+             break;
+         case LINKSTAT__RSVD:
+             sz = tr("未定义");
+             pItem->setIcon(QIcon(":/png/png/yellow.png"));
+             break;
+        }
+        pItem->setToolTip(m_listStrBit.at(idx)+": "+sz);
+        idx++;
+    }
+    for(int i=0; i<STOR_NUM; i++)
+    {
+     QListWidgetItem *pItem = this->tf->SetCuListBit()->item(idx);
+
+     UINT32 *pU = (UINT32*)&pData->stor_stat;
+     QString sz;
+     switch((*pU>>(i*2)) & 0x3)
+     {
+     case LINKSTAT__DOWN:
+         sz = tr("无连接");
+         pItem->setIcon(QIcon(":/png/png/blue.png"));
+         break;
+     case LINKSTAT__ERROR:
+         sz = tr("有故障");
+         pItem->setIcon(QIcon(":/png/png/red.png"));
+         break;
+     case LINKSTAT__UP:
+         sz = tr("正常");
+         pItem->setIcon(QIcon(":/png/png/green.png"));
+         break;
+     case LINKSTAT__RSVD:
+         sz = tr("未定义");
+         pItem->setIcon(QIcon(":/png/png/yellow.png"));
+         break;
+     }
+     pItem->setToolTip(m_listStrBit.at(idx)+": "+sz);
+     idx++;
+    }
+}
+
+void MainU1::AllCmdUiSlot(QByteArray head, QByteArray data)
+{
+    cmi_msgr_all_cmdresult *pMsgr = (cmi_msgr_all_cmdresult *)data.data();
+    QString sz;
+    if(pMsgr->flag & CMI_CMDRESULT_FLAG__DONE)
+    {
+        switch(pMsgr->cmd)
+        {
+         case CMI_CMD__STOR_OPERFILE:
+             sz = QString(tr("文件操作完成，返回值:%1")).arg(pMsgr->result);
+             break;
+         case CMI_CMD__STOR_OPERMED:
+         {
+             static int iCount = 0;
+             iCount++;
+             m_bMounted = (pMsgr->result==0);
+             if((!m_bMounted) && (iCount<4))
+             {
+                 Mysleep(5000);
+                 if(m_uMountMode == CMI_MEDOP__MOUNT)
+                     emit MountSignal(false);
+                 else
+                     emit UnmountSignal(false);
+             }
+             else
+             {
+                 iCount = 0;
+                 sz = QString(tr("磁盘操作完成，返回值:%1")).arg(pMsgr->result);
+             }
+         }
+             break;
+         case CMI_CMD__BIZ_CTRLPLAY:
+             sz = QString(tr("回放控制完成，返回值:%1")).arg(pMsgr->result);
+             break;
+         case CMI_CMD__STOR_LISTFILE:
+             sz = QString(tr("目录返回完成，返回值:%1")).arg(pMsgr->result);
+             break;
+         case CMI_CMD__BIZ_CTRLMIG:
+             sz = QString(tr("卸载控制完成，返回值:%1")).arg(pMsgr->result);
+             break;
+         case RW_CMD__ADM_SELFDIAG:
+             sz = QString(tr("静态自检完成，返回值:%1")).arg(pMsgr->result);
+             break;
+         case RW_CMD__ADM_SOFTRESET:
+             sz = QString(tr("软复位完成，返回值:%1")).arg(pMsgr->result);
+             break;
+         case RW_CMD__ADM_SELFDEST:
+             sz = QString(tr("软销毁完成，返回值:%1")).arg(pMsgr->result);
+             break;
+        }
+    }
+        else
+        {
+            UpdateProgressSlot(true, pMsgr->progress);
+            switch(pMsgr->cmd)
+             {
+             case CMI_CMD__STOR_OPERFILE:
+                 sz = QString(tr("操作文件中(%1%)...")).arg(pMsgr->progress);
+                 break;
+             case CMI_CMD__BIZ_CTRLPLAY:
+                 sz = QString(tr("回放进行中(%1%)...")).arg(pMsgr->progress);
+                 break;
+             case CMI_CMD__STOR_LISTFILE:
+                 sz = QString(tr("目录返回进行中(%1%)...")).arg(pMsgr->progress);
+                 break;
+             case CMI_CMD__BIZ_CTRLMIG:
+                 sz = QString(tr("文件卸载进行中(%1%)...")).arg(pMsgr->progress);
+                 break;
+             case RW_CMD__ADM_SELFDIAG:
+                 sz = QString(tr("静态自检进行中(%1%)...")).arg(pMsgr->progress);
+                 break;
+             case RW_CMD__ADM_SOFTRESET:
+                 sz = QString(tr("软复位进行中(%1%)...")).arg(pMsgr->progress);
+                 break;
+             case RW_CMD__ADM_SELFDEST:
+                 sz = QString(tr("软销毁进行中(%1%)...")).arg(pMsgr->progress);
+                 break;
+             }
+                if(!sz.isEmpty()) emit UImsg(sz);
+        }
+    }
 
 void MainU1::rpmchkChnSelReplay()
 {
@@ -725,7 +965,6 @@ void MainU1::rpmchkReplayB()
         PBrpmchkReplayB.addFile(":/png/png/checkmark-128.png");
         this->tf->SetRpmChkB()->setIcon(PBrpmchkReplayB);
     } else {
-
         PBrpmchkReplayB.addFile(":/png/png/cross-128.png");
         this->tf->SetRpmChkB()->setIcon(PBrpmchkReplayB);
     }
@@ -1094,7 +1333,7 @@ void MainU1::slot_spmpoweroff()
     this->tf->SetSpmPoweroff()->setEnabled(false);
     emit PowerDownSignal();
     m_bLogined = false;
-    //uiChgToolEnable(false);
+    uiChgToolEnable(false);
     Mysleep(5000);
     m_bManual = false;
     m_tcpclient->disconnectFromHost();
@@ -1129,59 +1368,118 @@ void MainU1::slot_spmupdate()
     Mysleep(5000);
     this->tf->SetSpmUpdate()->setEnabled(true);
 }
-//void MainU1::ChartUpdate(int idx, double dblUsed, double dblUsable)
-//{
-//    if(idx<0 || idx>=noOfChartViewers) return;
 
-//    // Create a PieChart object of size 320 x 300 pixels
-//    int w = 320;
-//    int h = 300;
-//    PieChart *c = new PieChart(w, h);
+void MainU1::slot_cutrwitemselectionchange()
+{
+    QList<QTreeWidgetItem *> listItemSelected =this->tf->SetCuTreeFile()->selectedItems();
+    if(listItemSelected.count() == 0) return;
+    CFileAttrib fSrc;
+    fSrc.ConvertFromFilename(listItemSelected.at(0)->data(0, Qt::UserRole).toString());
+    INT32 nTier = listItemSelected.at(0)->data(1, Qt::UserRole).toInt();
+    this->tf->SetCuTableFile()->clearContents();
+    this->tf->SetCuTableFile()->setRowCount(65536);
+    this->tf->SetCuTableFile()->setDragEnabled(false);
+    m_mutexFile.lock();
+    UINT32 idx = 0;
+    QString strTooltip;
+    for (int i = 0; i < (int)m_listFile.count(); i++)
+    {
+        QString strFlag = "";
+        CFileAttrib fCompare = m_listFile.at(i);
+        switch (nTier)
+        {
+        case 2:
+            if (!fSrc.IsSameDtype(&fCompare))
+                break;
+        case 1:
+            if (!fSrc.IsSameChannel(&fCompare))
+                break;
+        case 0:
+            // date
+            if (!fSrc.IsSameDate(&fCompare))
+                break;
+        default:
+            this->tf->SetCuTableFile()->setItem(idx, 0, new QTableWidgetItem(fCompare.GetFullFilename()));
+            this->tf->SetCuTableFile()->setItem(idx, 1, new QTableWidgetItem(fCompare.GetCreateDateTime()));
+            this->tf->SetCuTableFile()->setItem(idx, 2, new QTableWidgetItem(fCompare.GetDataType()));
+            this->tf->SetCuTableFile()->setItem(idx, 3, new QTableWidgetItem(fCompare.GetFileLength()));
+            this->tf->SetCuTableFile()->item(idx, 0)->setIcon(QIcon(":/ico/icon/file.ico"));
+            this->tf->SetCuTableFile()->item(idx, 0)->setToolTip(QString("文件名： %1\n创建时间： %2\n文件大小: %3").arg(fCompare.GetFullFilename())
+                                                                 .arg(fCompare.GetCreateDateTime()).arg(fCompare.GetFileLength()));
+            this->tf->SetCuTableFile()->item(idx, 3)->setTextAlignment(Qt::AlignVCenter|Qt::AlignRight);
+            if (fCompare.bProtected)	strFlag += "W";
+            if (fCompare.bCompressed)	strFlag += "C";
+            if (fCompare.bEncryped)	strFlag += "E";
+            if (fCompare.bMarked)	strFlag += "M";
+            this->tf->SetCuTableFile()->setItem(idx, 4, new QTableWidgetItem(strFlag,10));
+            idx++;
+            break;
+        }
 
-//    // Set the center of the pie at (150, 140) and the radius to 100 pixels
-//    c->setPieSize(150, 140, 100);
+    }
+    this->tf->SetCuTableFile()->setRowCount(idx);
+    m_mutexFile.unlock();
 
-//    // Add a title to the pie chart
-//    if(idx==0)
-//        c->addTitle(QTextCodec::codecForName("UTF-8")->fromUnicode("设备容量").constData(), "simsun.ttc", 12)->setMargin(0, 0, 4, 0);
-//    else
-//        c->addTitle(QTextCodec::codecForName("UTF-8")->fromUnicode("磁盘箱容量").constData(), "simsun.ttc", 12)->setMargin(0, 0, 4, 0);
+}
 
-//    c->setLabelStyle( "simsun.ttc",12,0x20000000);
-//    //c->setDefaultFonts("simsun.ttc");
+void MainU1::slot_cupbbitsmall()
+{
+    slot_mgmselfcheck();
+}
 
-//    // Draw the pie in 3D
-//    c->set3D();
+void MainU1::ChartUpdate(int idx, double dblUsed, double dblUsable)
+{
+    if(idx<0 || idx>=noOfChartViewers) return;
 
-//    //dblUsed和dblUsable的单位都是MB
-//    //当没有磁盘箱时，传过来的数可能为0，可能有异常，做一点保护，当异常时不做图
-//    if((dblUsable+dblUsed)>100.0)
-//    {
-//        // The data for the pie chart
-//        //double data[] = {(pData->capboard+pData->capextboard-pData->capusable)/1024.0*CAP_UNIT, pData->capusable/1024.0*CAP_UNIT};
-//        double data[] = {dblUsed, dblUsable};
-//        // The labels for the pie chart
-//        const char *labels[] = {"已用","空闲"};
-//        // Set the pie data and the pie labels
-//        c->setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), StringArray(labels, (int)(
-//            sizeof(labels) / sizeof(labels[0]))));
-//    }
-//    // Output the chart
-//    c->makeChart();
+    // Create a PieChart object of size 320 x 300 pixels
+    int w = 320;
+    int h = 300;
+    PieChart *c = new PieChart(w, h);
 
-//    // Output the chart
-//    m_chartViewers[idx]->setChart(c);
+    // Set the center of the pie at (150, 140) and the radius to 100 pixels
+    c->setPieSize(150, 140, 100);
 
-//    // Include tool tip for the chart
-//    m_chartViewers[idx]->setImageMap(
-//        c->getHTMLImageMap("", "", "title='{label}: {value}MB ({percent}%)'"));
+    // Add a title to the pie chart
+    if(idx==0)
+        c->addTitle(QTextCodec::codecForName("UTF-8")->fromUnicode("设备容量").constData(), "simsun.ttc", 12)->setMargin(0, 0, 4, 0);
+    else
+        c->addTitle(QTextCodec::codecForName("UTF-8")->fromUnicode("磁盘箱容量").constData(), "simsun.ttc", 12)->setMargin(0, 0, 4, 0);
 
-//    // In this sample project, we do not need to chart object any more, so we
-//    // delete it now.
+    c->setLabelStyle( "simsun.ttc",12,0x20000000);
+    //c->setDefaultFonts("simsun.ttc");
 
-//    m_chartViewers[idx]->show();
-//    delete c;
-//}
+    // Draw the pie in 3D
+    c->set3D();
+
+    //dblUsed和dblUsable的单位都是MB
+    //当没有磁盘箱时，传过来的数可能为0，可能有异常，做一点保护，当异常时不做图
+    if((dblUsable+dblUsed)>100.0)
+    {
+        // The data for the pie chart
+        //double data[] = {(pData->capboard+pData->capextboard-pData->capusable)/1024.0*CAP_UNIT, pData->capusable/1024.0*CAP_UNIT};
+        double data[] = {dblUsed, dblUsable};
+        // The labels for the pie chart
+        const char *labels[] = {"已用","空闲"};
+        // Set the pie data and the pie labels
+        c->setData(DoubleArray(data, (int)(sizeof(data) / sizeof(data[0]))), StringArray(labels, (int)(
+            sizeof(labels) / sizeof(labels[0]))));
+    }
+    // Output the chart
+    c->makeChart();
+
+    // Output the chart
+    m_chartViewers[idx]->setChart(c);
+
+    // Include tool tip for the chart
+    m_chartViewers[idx]->setImageMap(
+        c->getHTMLImageMap("", "", "title='{label}: {value}MB ({percent}%)'"));
+
+    // In this sample project, we do not need to chart object any more, so we
+    // delete it now.
+
+    m_chartViewers[idx]->show();
+    delete c;
+}
 
 void MainU1::slot_inqstatus(QByteArray data)
 {
@@ -1196,7 +1494,7 @@ void MainU1::slot_inqstatus(QByteArray data)
         this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString::number(pData->capboard*1.024*1.024/1000.0*CAP_UNIT, 'f', 2)+tr(" MB")));
         this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备可用容量")));
         this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString::number(pData->capusable*1.024/1000.0*CAP_UNIT, 'f', 2)+tr(" MB")));
-        //ChartUpdate(0, (pData->capboard+pData->capextboard-pData->capusable)*1.3/1000.0*CAP_UNIT, pData->capusable*1.3/1000.0*CAP_UNIT);
+        ChartUpdate(0, (pData->capboard+pData->capextboard-pData->capusable)*1.3/1000.0*CAP_UNIT, pData->capusable*1.3/1000.0*CAP_UNIT);
     } else {
         this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备总容量")));
         this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString::number(pData->capboard*1.024*1.024/1000.0*CAP_UNIT, 'f', 2)+tr(" MB")));
@@ -1207,7 +1505,7 @@ void MainU1::slot_inqstatus(QByteArray data)
      QLabel *pLabel;
      for(int i=0; i<2; i++)
      {
-         this->tf->SetTlwDevSta()->setItem(idx, 0, new QTableWidgetItem(m_listStrLink.at(i)+tr("链路状态")));
+         this->tf->SetTlwDevSta()->setItem(idx, 0, new QTableWidgetItem(m_listStrLink.at(i) + tr("链路状态")));
          pLabel = m_listStatLink.at(i);
          UINT32 *pU = (UINT32*)&pData->chan_stat;
          QString sz;
@@ -1234,50 +1532,255 @@ void MainU1::slot_inqstatus(QByteArray data)
               pLabel->setPixmap(QPixmap(":/png/png/ledyellow.png"));
               break;
          }
-         pLabel->setToolTip(m_listStrLink.at(i)+": "+sz);
-         this->tf->SetTlwDevSta()->setItem(idx++, 1, new QTableWidgetItem(sz));
 
-         this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("总记录速度")));
-         pData->fc_speed = pData->fc_speed * 1.024 * 1.024;
-         this->tf->SetTlwDevSta()->setItem(idx++, 1, new QTableWidgetItem(
-                    QString::number(pData->fc_speed, 10)+get_speed_unit_str(pData->fc_speed_unit)+tr("/s")));
-         this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备工作状态")));
-         QString szWork;
-         switch(pData->dev_runstat)
-         {
-         case RUNSTAT__INIT:
-             szWork = tr("初始化");
-             break;
-         case RUNSTAT__READY:
-             szWork = tr("准备");
-             break;
-         case RUNSTAT__RECORD:
-             szWork = tr("记录");
-             break;
-         case RUNSTAT__DOWNLOAD:
-             szWork = tr("卸载");
-             break;
-         case RUNSTAT__PLAYBACK:
-             szWork = tr("回放");
-             break;
-         }
-
-         this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(szWork));
-
-         uint64_t val = pData->caphd;
-         uint32_t temp = ((val >> 32) & 0xffffffff)/10;
-         float vol_int = (val & 0xffffffff)/100.0;
-
-         this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备温度")));
-         this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString::number(temp, 10).toUpper()+tr(" 度")));
-         this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备电压INT"),10));
-         this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString("%1").arg(vol_int) + tr(" V")));
-         val = pData->caphdusable;
-         float vol_ddr= ((val >> 32) & 0xffffffff)/100.0;
-         float vol_aux = (val & 0xffffffff)/100.0;
-         this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备电压DDR"),10));
-         this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString("%1").arg(vol_ddr)+ tr(" V")));
-         this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备电压AUX"),10));
-         this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString("%1").arg(vol_aux) + tr(" V")));
+        pLabel->setToolTip(m_listStrLink.at(i)+": "+sz);
+        this->tf->SetTlwDevSta()->setItem(idx++, 1, new QTableWidgetItem(sz));
      }
+     this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("总记录速度")));
+     pData->fc_speed = pData->fc_speed * 1.024 * 1.024;
+     this->tf->SetTlwDevSta()->setItem(idx++, 1, new QTableWidgetItem(
+                QString::number(pData->fc_speed, 10)+get_speed_unit_str(pData->fc_speed_unit)+tr("/s")));
+     this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备工作状态")));
+     QString szWork;
+     switch(pData->dev_runstat)
+     {
+     case RUNSTAT__INIT:
+         szWork = tr("初始化");
+         break;
+     case RUNSTAT__READY:
+         szWork = tr("准备");
+         break;
+     case RUNSTAT__RECORD:
+         szWork = tr("记录");
+         break;
+     case RUNSTAT__DOWNLOAD:
+         szWork = tr("卸载");
+         break;
+     case RUNSTAT__PLAYBACK:
+         szWork = tr("回放");
+         break;
+     }
+
+     this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(szWork));
+
+     uint64_t val = pData->caphd;
+     uint32_t temp = ((val >> 32) & 0xffffffff)/10;
+     float vol_int = (val & 0xffffffff)/100.0;
+
+     this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备温度")));
+     this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString::number(temp, 10).toUpper()+tr(" 度")));
+     this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备电压INT"),10));
+     this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString("%1").arg(vol_int) + tr(" V")));
+     val = pData->caphdusable;
+     float vol_ddr= ((val >> 32) & 0xffffffff)/100.0;
+     float vol_aux = (val & 0xffffffff)/100.0;
+     this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备电压DDR"),10));
+     this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString("%1").arg(vol_ddr)+ tr(" V")));
+     this->tf->SetTlwDevSta()->setItem(idx,0,new QTableWidgetItem(tr("设备电压AUX"),10));
+     this->tf->SetTlwDevSta()->setItem(idx++,1,new QTableWidgetItem(QString("%1").arg(vol_aux) + tr(" V")));
+
+}
+
+void MainU1::WipeSlot(QByteArray data)
+{
+    RW_MSGR__MED_WIPESTOR *pMsgr = (RW_MSGR__MED_WIPESTOR*)data.data();
+
+     QString sz;
+     if(pMsgr->done_flag != WIPE_DONE)
+         sz = QString("文件清除中(%1%)...").arg(pMsgr->progress);
+     else {
+         sz = tr("文件清除已完成。");
+     }
+     emit UImsg(sz);
+
+     if(pMsgr->done_flag == WIPE_DONE)
+     {
+         UpdateProgressSlot(false);
+     } else {
+         UpdateProgressSlot(true, pMsgr->progress);
+     }
+}
+
+void MainU1::WorkStatusSlot(QByteArray data)
+{
+     cmi_msgr_heartbeat_t* hb = (cmi_msgr_heartbeat_t*)data.data();
+     BIZ_TYPE biztype = hb->sys_biztype;
+     static bool bFormatting = false;
+     QString sz;
+     if (biztype & BIZTYPE__REC)
+     {
+         sz += tr("记录");
+         this->tf->SetRpmStop()->setEnabled(true);
+         uiChgBizEnable(false);
+     } else {
+         this->tf->SetRpmStop()->setEnabled(false);
+     }
+     if (biztype & BIZTYPE__PLAY)
+     {
+         sz += tr("回放");
+         this->tf->SetRpmPause()->setEnabled(true);
+         this->tf->SetRpmStop()->setEnabled(true);
+         uiChgBizEnable(false);
+     } else {
+         this->tf->SetRpmPause()->setEnabled(false);
+         this->tf->SetRpmStop()->setEnabled(false);
+     }
+     if(biztype & BIZTYPE__FORMAT)
+     {
+        sz += tr("格式化 ");
+        uiChgToolEnable(false);
+        this->tf->SetSmDisconnect()->setEnabled(false);
+        bFormatting = true;
+     }
+     if(sz.isEmpty())
+     {
+         sz = tr("空闲");
+         FunInIdleEnable(true);
+         uiChgBizEnable(true);
+         if(bFormatting)
+         {
+            bFormatting = false;
+            uiChgToolEnable(true);
+         }
+     }
+     QString strWorkStatus = tr("工作状态: ") + sz;
+     m_labelStatUser->setText(strWorkStatus);
+}
+
+void MainU1::uiChgToolEnable(bool bEnable)
+{
+#if 0
+    this->tf->SetSmConnect()->setEnabled(!m_connectstatus);
+    this->tf->SetSmDisconnect()->setEnabled(m_connectstatus);
+    this->tf->SetSmLogin()->setEnabled(m_connectstatus && !m_bLogined && bEnable);
+    this->tf->SetSmLogout()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetUmCreatUsr()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetUmDelusr()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetUmModifyPswd()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetSpmClearData()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetSpmSoftdistory()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetSpmPoweroff()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetSpmSoftReset()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetSpmUpdate()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetRcdmRecStart()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetRcdmRecStop()->setEnabled(false);
+    this->tf->SetRcdmFilesz()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetRpmReplay()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetRpmPause()->setEnabled(false);
+    this->tf->SetRpmStop()->setEnabled(false);
+    this->tf->SetSlcmInqDir()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetSlcmDelFile()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetMgmSelfCheck()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetMgmSendTime()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetCuBitsmall()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+#endif
+}
+
+void MainU1::uiChgBizEnable(bool bEnable)
+{
+    this->tf->SetSlcmDelFile()->setEnabled(bEnable && m_bLogined);
+    this->tf->SetSlcmInqDir()->setEnabled(bEnable && m_bLogined);
+    this->tf->SetSpmClearData()->setEnabled(bEnable && m_bLogined);
+    this->tf->SetSmDisconnect()->setEnabled(bEnable);
+    this->tf->SetSmLogout()->setEnabled(bEnable && m_bLogined);
+}
+
+void MainU1::FunInIdleEnable(bool bEnable)
+{
+    this->tf->SetRcdmRecStart()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetRcdmRecStop()->setEnabled(false);
+    this->tf->SetRpmReplay()->setEnabled(m_connectstatus && m_bLogined && bEnable);
+    this->tf->SetRpmPause()->setEnabled(false);
+    this->tf->SetRpmStop()->setEnabled(false);
+}
+
+void MainU1::DirSlot(QList<CFileAttrib> list)
+{
+    this->tf->SetCuTableFile()->clearContents();
+    this->tf->SetCuTreeFile()->clear();
+
+    if(list.isEmpty()) return;
+    m_mutexFile.lock();
+    m_listFile = list;
+    for (int i = 0; i < (int)m_listFile.count(); i++)
+    {
+        QTreeWidgetItem *pParent = NULL;
+        CFileAttrib fSrc = m_listFile.at(i);
+        UINT32 nTier = 0;
+        BOOL bNeedAdd = true;
+        for(int j = 0; j < this->tf->SetCuTreeFile()->topLevelItemCount(); j++)
+        {
+            CFileAttrib fDest;
+            if(!fDest.ConvertFromFilename(this->tf->SetCuTreeFile()->topLevelItem(j)->data(0, Qt::UserRole).toString()))
+            {
+                continue;
+            }
+            if(fSrc.IsSameDate(&fDest))
+            {
+                nTier = 1;
+                pParent = this->tf->SetCuTreeFile()->topLevelItem(j);
+                for(int m = 0; m < this->tf->SetCuTreeFile()->topLevelItem(j)->childCount();m++)
+                {
+                    if(!fDest.ConvertFromFilename(this->tf->SetCuTreeFile()->topLevelItem(j)->child(m)->data(0, Qt::UserRole).toString()))
+                    {
+                        continue;
+                    }
+                    if(fSrc.IsSameChannel(&fDest))
+                    {
+                        nTier = 2;
+                        pParent = this->tf->SetCuTreeFile()->topLevelItem(j)->child(m);
+                        for(int n=0; this->tf->SetCuTreeFile()->topLevelItem(j)->child(m)->childCount(); n++)
+                        {
+                            if(!fDest.ConvertFromFilename(this->tf->SetCuTreeFile()->topLevelItem(j)->child(m)->child(n)->data(0, Qt::UserRole).toString()))
+                            {
+                                continue;
+                            }
+                            if(fSrc.IsSameDtype(&fDest))
+                            {
+                                bNeedAdd = false;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        if(bNeedAdd)
+        {
+            InsertTreeItem(&fSrc, nTier, pParent);
+        }
+    }
+    m_mutexFile.unlock();
+}
+
+void MainU1::InsertTreeItem(CFileAttrib *pfileAttribSrc, INT32 nTier, QTreeWidgetItem *pParent)
+{
+    QTreeWidgetItem *A, *B, *C;
+    switch(nTier)
+    {
+    case 0:
+        A = new QTreeWidgetItem(QStringList()<<pfileAttribSrc->GetCreateDate());
+        A->setData (0, Qt::UserRole, pfileAttribSrc->GetFullFilename());
+        A->setData (1, Qt::UserRole, 0);
+        this->tf->SetCuTreeFile()->addTopLevelItem(A);
+        Q_ASSERT(pParent==NULL);
+        pParent = A;
+    case 1:
+        B = new QTreeWidgetItem(QStringList()<<pfileAttribSrc->GetChannelName());
+        B->setData (0, Qt::UserRole, pfileAttribSrc->GetFullFilename());
+        B->setData (1, Qt::UserRole, 1);
+        pParent->addChild(B);
+        pParent = B;
+    case 2:
+        C = new QTreeWidgetItem(QStringList()<<pfileAttribSrc->GetDataType());
+        C->setData (0, Qt::UserRole, pfileAttribSrc->GetFullFilename());
+        C->setData (1, Qt::UserRole, 2);
+        pParent->addChild(C);
+        break;
+    default:
+        Q_ASSERT(0);
+        break;
+    }
 }

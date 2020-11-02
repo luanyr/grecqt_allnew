@@ -27,6 +27,10 @@ public:
     QListWidget *SetLwListBit();
     QLineEdit* SetTcpAddr();
     QLineEdit* SetTcport();
+    QToolButton* SetSmConnect();
+    QToolButton* SetSmDisconnect();
+    QToolButton* SetSmLogin();
+    QToolButton* SetSmLogout();
     QLineEdit* SetUserName();
     QLineEdit* SetUserPswd();
     QPushButton *SetRcdmChkA();
@@ -35,6 +39,7 @@ public:
     QString GetRcdmFileszUint();
     QToolButton *SetRcdmRecStart();
     QToolButton *SetRcdmRecStop();
+    QToolButton *SetRcdmFilesz();
     QPushButton *SetRpmChkA();
     QPushButton *SetRpmChkB();
     QPushButton *SetRpmType1();
@@ -82,6 +87,8 @@ public:
     QToolButton *SetSpmPoweroff();
     QToolButton *SetSpmUpdate();
     QToolButton *SetSpmSoftdistory();
+    QProgressBar *SetCuProgress();
+    QTabWidget *SetCuDevStaCap();
 private:
     Ui::Top_Form *ui;
     startmenu_init      *sm;
@@ -114,6 +121,7 @@ public slots:
     void slot_mgmhandlesignal(int);
     void slot_umhandlesignal(int);
     void slot_spmhandlesignal(int);
+    void slot_cuhandlesignal(int);
 signals:
     void signals_pbtype(int);
     void signals_cmtype(int);
@@ -123,6 +131,7 @@ signals:
     void signals_mgmtype(int);
     void signals_umtype(int);
     void signals_spmtype(int);
+    void signals_cutype(int);
 };
 
 #endif // TOP_FORM_H

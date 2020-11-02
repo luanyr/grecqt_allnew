@@ -195,11 +195,16 @@ private:
     RecvThread *m_pThrdRecv;
     SendThread *m_pThrdSend;
 //    QChartViewer *m_chartViewers[2];
+    UINT32 m_uRetry;
+    QMutex m_mutexFile;
     BOOL m_connectstatus;
     BOOL m_loginstatus;
     BOOL m_bLogined;
     BOOL m_bNeedRecMode;
     BOOL m_bManual;
+    BOOL m_bAlive;
+    BOOL m_bMounted;
+    UINT m_uMountMode;
     CStoreInfo m_infoStore;
     QLabel *m_labelStatUser;
     QStringList m_listStrBit;
@@ -214,10 +219,12 @@ private:
     QList<QPushButton*> m_listChkSelect;
     QList<QPushButton*> m_listChkTypeSelect;
     QList<CFileAttrib> m_listFile;
+    QChartViewer *m_chartViewers[noOfChartViewers];
     void UiInit();
     void addwidget();
     void connectserver();
     void disconnectserver();
+    void displayError();
     void userlogin();
     void userlogout();
     void UpdateChannelName();
@@ -231,9 +238,15 @@ private:
     void OtherInit();
     void cmsetdefault();
     void cmconfirm();
+    void uiChgToolEnable(bool bEnable);
+    void uiChgBizEnable(bool bEnable);
+    void FunInIdleEnable(bool bEnable);
+    void TimerHeartBeatFunction();
+    void ChartUpdate(int idx, double dblUsed, double dblUsable);
+
+    void InsertTreeItem(CFileAttrib *pfileAttribSrc, INT32 nTier, QTreeWidgetItem *pParent);
     QVariant ReadLimitReplay();
     QVariant ReadLimitSelect();
-    QMutex m_mutexFile;
     void TimerSyncTimeFunction();
     void Mysleep(UINT32 usec){
         QTime reachtime = QTime::currentTime().addMSecs(usec);
@@ -250,6 +263,7 @@ signals:
     void Signal_Heartbeat();
     void SetfileszSignal(UINT32 uPU);
     void RecConSignal(UINT32 uCon);
+    void RecModeSignal(UINT32 uRecMode);
     void PlaybackStartSignal(QVariant fileter);
     void PlaybackPauseSignal(UINT32 uPbPause);
     void PlaybackStopSignal();
@@ -265,6 +279,20 @@ signals:
     void ResetSignal();
     void SelfDestorySignal();
     void PowerDownSignal();
+    void MountSignal(bool bShow);
+    void UnmountSignal(bool bshow);
+    void HeartBeatSignal();
+    void WriteProtectSignal(QVariant fileter);
+    void WriteProtectOffSignal(QVariant fileter);
+    void UnInstStartSignal(QVariant fileter);
+    void UnInstStopSignal();
+    void CompressConSignal();
+    void EncryptConSignal();
+    void InqPUSignal(UINT32 uPU, UINT32 uRange);
+    void LogSignal();
+    void ReportSignal();
+    void SetCurVecSignal(double dblLon, double dblLat, double dblDir);
+    void MenuActionSignal(UINT32 uCmdTm, QStringList listFile);
 private slots:
     void slot_havaconnected();
     void slot_havedisconnected();
@@ -311,6 +339,15 @@ private slots:
     void slot_spmpoweroff();
     void slot_spmupdate();
     void slot_spmsoftdistory();
+    void slot_cutrwitemselectionchange();
+    void slot_cupbbitsmall();
+    void AllAckSlot(QByteArray head);
+    void AllCmdUiSlot(QByteArray, QByteArray);
+    void UpdateProgressSlot(bool bShow, UINT32 percent=0);
+    void DirSlot(QList<CFileAttrib> list);
+    void BitSlot(QByteArray);
+    void WipeSlot(QByteArray data);
+    void WorkStatusSlot(QByteArray data);
 public slots:
     void slot_handlesignal(int type);
     void slot_closeapp();
@@ -321,6 +358,7 @@ public slots:
     void slot_handlemgmsignals(int);
     void slot_handleumsignals(int);
     void slot_handlespmsignals(int);
+    void slot_handlecusignals(int);
     //void slot_handlerpmsignal(int);
 };
 

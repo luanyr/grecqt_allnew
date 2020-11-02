@@ -17,6 +17,7 @@ Top_Form::Top_Form(QWidget *parent) :
     connect(this->mgm, SIGNAL(SIGNAL_MgmType(int)), this, SLOT(slot_mgmhandlesignal(int)));
     connect(this->um, SIGNAL(SIGNAL_UmType(int)), this, SLOT(slot_umhandlesignal(int)));
     connect(this->spm, SIGNAL(SIGNAL_SpmType(int)), this, SLOT(slot_spmhandlesignal(int)));
+    connect(this->cu, SIGNAL(SIGNAL_CuType(int)), this, SLOT(slot_cuhandlesignal(int)));
 }
 
 Top_Form::~Top_Form()
@@ -378,6 +379,26 @@ void Top_Form::CuStatusUsr(QString usrname, int status)
     this->cu->Statususr_Change(usrname, status);
 }
 
+QToolButton *Top_Form::SetSmConnect()
+{
+    return this->sm->SetTbConnect();
+}
+
+QToolButton *Top_Form::SetSmDisconnect()
+{
+    return this->sm->SetTbDisconnect();
+}
+
+QToolButton *Top_Form::SetSmLogin()
+{
+    return this->sm->SetTblogin();
+}
+
+QToolButton *Top_Form::SetSmLogout()
+{
+    return this->sm->SetTblogout();
+}
+
 QTableWidget *Top_Form::setchannel()
 {
     return this->cm->setchannel();
@@ -451,6 +472,11 @@ QToolButton* Top_Form::SetRcdmRecStart()
 QToolButton* Top_Form::SetRcdmRecStop()
 {
     return this->rcdm->SetRecStop();
+}
+
+QToolButton* Top_Form::SetRcdmFilesz()
+{
+    return this->rcdm->SetRecFilesz();
 }
 
 QPushButton* Top_Form::SetRpmChkA()
@@ -677,3 +703,27 @@ QToolButton* Top_Form::SetSpmUpdate()
 {
     return this->spm->SetUpdate();
 }
+
+QProgressBar* Top_Form::SetCuProgress()
+{
+    return this->cu->SetProgress();
+}
+
+void Top_Form::slot_cuhandlesignal(int type)
+{
+    switch (type) {
+    case cusignal_trwitemselectionchange:
+        emit signals_cutype(cusignal_trwitemselectionchange);
+        break;
+    case cusignal_pbpbbitsmall:
+        emit signals_cutype(cusignal_pbpbbitsmall);
+        break;
+    default:
+        break;
+    }
+}
+
+ QTabWidget *Top_Form::SetCuDevStaCap()
+ {
+     return this->cu->SetDevStaCap();
+ }
