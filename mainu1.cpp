@@ -1373,12 +1373,12 @@ void MainU1::slot_slcmdeletefile()
 
 void MainU1::slot_slcminqdir()
 {
-    this->tf->SetCuTableFile()->clear();
+    this->tf->SetCuTableFile()->clearContents();
     this->tf->SetCuTableFile()->setRowCount(0);
     this->tf->SetCuTreeFile()->clear();
     m_listFile.clear();
 
-    this->tf->SetSlcmInqDir()->setEnabled(true);
+    this->tf->SetSlcmInqDir()->setEnabled(false);
     emit DirSignal(ReadLimitSelect());
     Mysleep(3000);
     m_mutexFile.lock();
@@ -1528,7 +1528,7 @@ void MainU1::slot_cutrwitemselectionchange()
             this->tf->SetCuTableFile()->setItem(idx, 2, new QTableWidgetItem(fCompare.GetDataType()));
             this->tf->SetCuTableFile()->setItem(idx, 3, new QTableWidgetItem(fCompare.GetFileLength()));
             this->tf->SetCuTableFile()->item(idx, 0)->setIcon(QIcon(":/ico/icon/file.ico"));
-            this->tf->SetCuTableFile()->item(idx, 0)->setToolTip(QString("文件名： %1\n创建时间： %2\n文件大小: %3").arg(fCompare.GetFullFilename())
+            this->tf->SetCuTableFile()->item(idx, 0)->setToolTip(QString(tr("文件名： %1\n创建时间： %2\n文件大小: %3")).arg(fCompare.GetFullFilename())
                                                                  .arg(fCompare.GetCreateDateTime()).arg(fCompare.GetFileLength()));
             this->tf->SetCuTableFile()->item(idx, 3)->setTextAlignment(Qt::AlignVCenter|Qt::AlignRight);
             if (fCompare.bProtected)	strFlag += "W";

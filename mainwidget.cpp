@@ -8,8 +8,8 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->setupUi(this);
     TW_MainPage = new QTabWidget(this);
     TW_MainPage->addTab(new MainU1(this), tr("客户端"));
-    TW_MainPage->resize(1500, 1200);
-    //TW_MainPage->setTabsClosable(true);
+    QRect deskRect = QApplication::desktop()->availableGeometry();
+    TW_MainPage->resize(deskRect.width(), deskRect.height());
 }
 
 MainWidget::~MainWidget()

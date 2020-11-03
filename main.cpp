@@ -24,6 +24,6 @@ int main(int argc, char *argv[])
     //a.setActiveWindow(&mu);
 //    mu.show();
     MainWidget m;
-    m.show();
+    m.showMaximized();
     return a.exec();
 }

@@ -6,8 +6,8 @@ ContentUI::ContentUI(QWidget *parent) :
     ui(new Ui::ContentUI)
 {
     ui->setupUi(this);
-    this->resize(1500, 1500);
-
+    QRect deskRect = QApplication::desktop()->availableGeometry();
+    this->resize(deskRect.width(), (deskRect.height() / 4) * 3);
     TW_init();
     FileView_init();
     StatusbarInit();
@@ -22,20 +22,23 @@ ContentUI::~ContentUI()
 void ContentUI::TW_init()
 {
     ft = new QFont();
-    ft->setPixelSize(12);
+    ft->setPixelSize(16);
     TW_DevStaCap = new QTabWidget(this);
     W_DevSta = new QWidget(this);
     W_Selfcheck = new QWidget(this);
     LAselfcheck = new QLabel(this);
 
-    W_DevSta->resize(300, 500);
+    W_DevSta->resize(350, 690);
+    W_Selfcheck->resize(350, 690);
     TLW_DevStatus = new QTableWidget();
     TLW_DevStatus->setParent(W_DevSta);
-    TLW_DevStatus->resize(290, 490);
+    TLW_DevStatus->resize(350, 690);
     TLW_DevStatus->move(5,5);
     TLW_DevStatus->setColumnCount(2);
+    TLW_DevStatus->setFont(*ft);
     //TLW_DevStatus->setRowCount(11 + );
-    TW_DevStaCap->resize(320, 520);
+    TW_DevStaCap->resize(360, 700);
+    W_Selfcheck->setFont(*ft);
     TW_DevStaCap->insertTab(0, W_DevSta, tr("设备状态"));
 
     LAselfcheck = new QLabel(W_Selfcheck);
@@ -57,7 +60,7 @@ void ContentUI::TW_init()
 
     WGTChart = new QWidget(W_Selfcheck);
     WGTChart->move(0, 150);
-    WGTChart->resize(280, 300);
+    WGTChart->resize(350, 500);
     VBLChart = new QVBoxLayout(WGTChart);
     VBLChart->setSpacing(2);
     VBLChart->setSizeConstraint(QLayout::SetMaximumSize);
@@ -73,16 +76,19 @@ void ContentUI::FileView_init()
     LA_filetext->move(400, 5);
 
     TRW_treefile = new QTreeWidget(this);
-    TRW_treefile->resize(130, 500);
-    TRW_treefile->move(400, 20);
+    TRW_treefile->resize(200, 680);
+    TRW_treefile->move(400, 25);
+    TRW_treefile->setFont(*ft);
 
     TW_tablefile = new QTableWidget(this);
-    TW_tablefile->resize(550, 500);
-    TW_tablefile->move(550, 20);
+    TW_tablefile->resize(700, 680);
+    TW_tablefile->move(650, 25);
+    TW_tablefile->setFont(*ft);
 
     TB_liststatus = new QTextBrowser(this);
-    TB_liststatus->resize(160, 500);
-    TB_liststatus->move(1200, 20);
+    TB_liststatus->resize(200, 680);
+    TB_liststatus->move(1400, 25);
+    TB_liststatus->setFont(*ft);
     connect(this->TRW_treefile, SIGNAL(itemSelectionChanged()), this, SLOT(slot_emittrwitemchange()));
     connect(this->PB_bitsmall, SIGNAL(clicked(bool)), this, SLOT(slot_emitPbBitSmall()));
 }
@@ -94,9 +100,10 @@ void ContentUI::ListShowStatus(QString msg)
 
 void ContentUI::StatusbarInit()
 {
+    QRect deskRect = QApplication::desktop()->availableGeometry();
     this->statusBar = new QStatusBar(this);
     statusBar->setObjectName(QString::fromUtf8("statusBar"));
-    statusBar->move(5, 550);
+    statusBar->move(5, deskRect.height()- 300);
 
     PB_statnet = new QPushButton;
     //PB_statnet->setMinimumSize(PB_statnet->sizeHint());

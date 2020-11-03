@@ -6,9 +6,10 @@ MenuUI::MenuUI(QWidget *parent) :
     ui(new Ui::MenuUI)
 {
     ui->setupUi(this);
-    this->resize(1000, 150);
+    QRect deskRect = QApplication::desktop()->availableGeometry();
+    this->resize(deskRect.width(), deskRect.height()/4);
     ft = new QFont();
-    ft->setPixelSize(12);
+    ft->setPixelSize(14);
 }
 
 MenuUI::~MenuUI()
@@ -18,24 +19,41 @@ MenuUI::~MenuUI()
 
 startmenu_init::startmenu_init()
 {
+    QPoint start_pos;
+    start_pos.setX(40);
+    start_pos.setY(40);
+    int Xinter_distance = 100;
+    int Yinter_distance0 = 40;
+    int Yinter_distance1 = 80;
+
+    start_pos.setY(Yinter_distance0 + 5);
+    QSize iconsize = QSize(85, 85);
     LAipaddr = new QLabel(this);
     LAipaddr->setText(tr("IP地址:"));
     LAipaddr->setFont(*ft);
-    LAipaddr->move(20, 40);
+    LAipaddr->move(start_pos);
 
+    start_pos.setY(Yinter_distance1 + 5);
     LAport = new QLabel(this);
     LAport->setText(tr("端口:"));
     LAport->setFont(*ft);
-    LAport->move(20, 70);
+    LAport->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(Yinter_distance0);
     LEipaddr = new QLineEdit(this);
-    LEipaddr->resize(100, 20);
-    LEipaddr->move(90, 40);
+    LEipaddr->resize(120, 30);
+    LEipaddr->move(start_pos);
+    LEipaddr->setFont(*ft);
 
+    start_pos.setY(Yinter_distance1);
     LEport = new QLineEdit(this);
-    LEport->resize(100, 20);
-    LEport->move(90, 70);
+    LEport->resize(120, 30);
+    LEport->move(start_pos);
+    LEport->setFont(*ft);
 
+    start_pos.setX(start_pos.x() + Xinter_distance + 20);
+    start_pos.setY(Yinter_distance0);
     QIcon TBconnecticon;
     TBconnecticon.addFile(tr(":/png/png/connected-128.png"));
     TBconnect = new QToolButton(this);
@@ -44,9 +62,12 @@ startmenu_init::startmenu_init()
     TBconnect->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBconnect->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBconnect->setText(tr("连接"));
-    TBconnect->resize(80, 80);
-    TBconnect->move(190, 20);
+    TBconnect->setFont(*ft);
+    TBconnect->resize(iconsize);
+    TBconnect->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(Yinter_distance0);
     QIcon TBdisconnecticon;
     TBdisconnecticon.addFile(tr(":/png/png/disconnected-128.png"));
     TBdisconnect = new QToolButton(this);
@@ -55,27 +76,38 @@ startmenu_init::startmenu_init()
     TBdisconnect->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBdisconnect->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBdisconnect->setText(tr("断开"));
-    TBdisconnect->resize(80, 80);
-    TBdisconnect->move(240, 20);
+    TBdisconnect->setFont(*ft);
+    TBdisconnect->resize(iconsize);
+    TBdisconnect->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(Yinter_distance0 + 5);
     LAusrname = new QLabel(this);
     LAusrname->setText(tr("用户名:"));
     LAusrname->setFont(*ft);
-    LAusrname->move(320, 40);
+    LAusrname->move(start_pos);
 
+    start_pos.setY(Yinter_distance1 + 5);
     LApswd = new QLabel(this);
     LApswd->setText(tr("密码："));
     LApswd->setFont(*ft);
-    LApswd->move(320, 70);
+    LApswd->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(Yinter_distance0);
     LEusrname = new QLineEdit(this);
-    LEusrname->resize(100, 20);
-    LEusrname->move(390, 40);
+    LEusrname->resize(120, 30);
+    LEusrname->setFont(*ft);
+    LEusrname->move(start_pos);
 
+    start_pos.setY(Yinter_distance1);
     LEpswd = new QLineEdit(this);
-    LEpswd->resize(100, 20);
-    LEpswd->move(390, 70);
+    LEpswd->resize(120, 30);
+    LEpswd->setFont(*ft);
+    LEpswd->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance + 20);
+    start_pos.setY(Yinter_distance0);
     QIcon TBloginicon;
     TBloginicon.addFile(tr(":/png/png/user.png"));
     TBlogin = new QToolButton(this);
@@ -84,9 +116,11 @@ startmenu_init::startmenu_init()
     TBlogin->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBlogin->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBlogin->setText(tr("用户登录"));
-    TBlogin->resize(80, 80);
-    TBlogin->move(500, 20);
+    TBlogin->setFont(*ft);
+    TBlogin->resize(iconsize);
+    TBlogin->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
     QIcon TBlogouticon;
     TBlogouticon.addFile(tr(":/png/png/talk-128.png"));
     TBlogout = new QToolButton(this);
@@ -95,9 +129,11 @@ startmenu_init::startmenu_init()
     TBlogout->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBlogout->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBlogout->setText(tr("退出登录"));
-    TBlogout->resize(80, 80);
-    TBlogout->move(580, 20);
+    TBlogout->setFont(*ft);
+    TBlogout->resize(iconsize);
+    TBlogout->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
     QIcon TBcloseappicon;
     TBcloseappicon.addFile(tr(":/png/png/cross-128.png"));
     TBcloseapp = new QToolButton(this);
@@ -106,8 +142,9 @@ startmenu_init::startmenu_init()
     TBcloseapp->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBcloseapp->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBcloseapp->setText(tr("关闭程序"));
-    TBcloseapp->resize(80, 80);
-    TBcloseapp->move(660, 20);
+    TBcloseapp->setFont(*ft);
+    TBcloseapp->resize(iconsize);
+    TBcloseapp->move(start_pos);
     connect(this->TBconnect, SIGNAL(clicked(bool)), this, SLOT(slot_emitconnnect()));
     connect(this->TBdisconnect, SIGNAL(clicked(bool)), this, SLOT(slot_emitdisconnect()));
     connect(this->TBlogin, SIGNAL(clicked(bool)), this, SLOT(slot_emituserlogin()));
@@ -207,17 +244,26 @@ QLineEdit* startmenu_init::GetUserpswdEdit()
 
 recordmenu_init::recordmenu_init()
 {
+    QPoint start_pos;
+    start_pos.setX(40);
+    start_pos.setY(40);
+    int Xinter_distance = 120;
 
     LEfilesz = new QLineEdit(this);
     LEfilesz->resize(90, 30);
-    LEfilesz->move(20, 50);
+    LEfilesz->move(start_pos);
     LEfilesz->setEnabled(false);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
     CBfilesz = new QComboBox(this);
     CBfilesz->addItem(tr("MB"));
     CBfilesz->addItem(tr("GB"));
+    CBfilesz->setFont(*ft);
     CBfilesz->resize(60, 30);
-    CBfilesz->move(120, 50);
+    CBfilesz->move(start_pos);
+
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(10);
     QIcon TBfileszIcon;
     TBfileszIcon.addFile(tr(":/png/png/geo_fence-128.png"));
     TBfilesz = new QToolButton(this);
@@ -228,8 +274,10 @@ recordmenu_init::recordmenu_init()
     TBfilesz->setText(tr("设置文件大小"));
     TBfilesz->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBfilesz->resize(100, 100);
-    TBfilesz->move(200, 30);
+    TBfilesz->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance + 20);
+    start_pos.setY(40);
     QIcon TBchkRec_AIcon;
     TBchkRec_AIcon.addFile(tr(":/png/png/cross-128.png"));
     TBchkRec_A = new QPushButton(this);
@@ -242,8 +290,9 @@ recordmenu_init::recordmenu_init()
     TBchkRec_A->setText(tr("SRIO0"));
     //TBchkRec_A->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBchkRec_A->resize(80, 30);
-    TBchkRec_A->move(320, 60);
+    TBchkRec_A->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
     QIcon TBchkRec_BIcon;
     TBchkRec_BIcon.addFile(tr(":/png/png/cross-128.png"));
     TBchkRec_B = new QPushButton(this);
@@ -256,8 +305,10 @@ recordmenu_init::recordmenu_init()
     TBchkRec_B->setText(tr("SRIO1"));
     //TBchkRec_B->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBchkRec_B->resize(80, 30);
-    TBchkRec_B->move(400, 60);
+    TBchkRec_B->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(10);
     QIcon TBRecStartIcon;
     TBRecStartIcon.addFile(tr(":/png/png/play-128.png"));
     TBRecStart = new QToolButton(this);
@@ -268,8 +319,9 @@ recordmenu_init::recordmenu_init()
     TBRecStart->setText(tr("开始记录"));
     TBRecStart->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBRecStart->resize(100, 100);
-    TBRecStart->move(480, 30);
+    TBRecStart->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
     QIcon TBRecStopIcon;
     TBRecStopIcon.addFile(tr(":/png/png/stop-128.png"));
     TBRecStop = new QToolButton(this);
@@ -280,7 +332,7 @@ recordmenu_init::recordmenu_init()
     TBRecStop->setText(tr("停止记录"));
     TBRecStop->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBRecStop->resize(100, 100);
-    TBRecStop->move(560, 30);
+    TBRecStop->move(start_pos);
     connect(this->TBfilesz,  SIGNAL(clicked(bool)), this,  SLOT(slot_emitSetFileSz()));
     connect(this->TBchkRec_A,SIGNAL(clicked(bool)), this,  SLOT(slot_emitchkRec_A()));
     connect(this->TBchkRec_B,SIGNAL(clicked(bool)), this,  SLOT(slot_emitchkRec_B()));
@@ -355,6 +407,11 @@ QString recordmenu_init::GetFileszUint()
 
 replaymenu_init::replaymenu_init()
 {
+    QPoint start_pos;
+    start_pos.setX(40);
+    start_pos.setY(0);
+    int Xinter_distance = 180;
+
     QIcon PBchkchnselreplayicon;
     PBchkchnselreplayicon.addFile(":/png/png/cross-128.png");
     PBchkchnselreplay = new QPushButton(this);
@@ -365,38 +422,40 @@ replaymenu_init::replaymenu_init()
     PBchkchnselreplay->setText(tr("通道约束"));
     //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
     PBchkchnselreplay->setIcon(PBchkchnselreplayicon);
+    PBchkchnselreplay->move(start_pos);
 
-    //PBchkchnselreplay->setIconSize(QSize(30, 30));
-    PBchkchnselreplay->move(20,0);
-
+    start_pos.setY(50);
     QIcon TBchkReplayAicon;
     TBchkReplayAicon.addFile(":/png/png/cross-128.png");
     TBchkReplayA = new QPushButton(this);
     TBchkReplayA->setCheckable(true);
     TBchkReplayA->setChecked(true);
-    TBchkReplayA->resize(80, 20);
+    TBchkReplayA->resize(100, 30);
     TBchkReplayA->setFont(*ft);
     TBchkReplayA->setText(tr("SRIO0"));
 //  TBchkReplayA->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBchkReplayA->setIcon(TBchkReplayAicon);
 //    TBchkReplayA->setIconSize(QSize(50, 50));
 //    TBchkReplayA->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBchkReplayA->move(30, 40);
+    TBchkReplayA->move(start_pos);
 
+    start_pos.setY(90);
     QIcon TBchkReplayBicon;
     TBchkReplayBicon.addFile(":/png/png/cross-128.png");
     TBchkReplayB = new QPushButton(this);
     TBchkReplayB->setCheckable(true);
     TBchkReplayB->setChecked(true);
-    TBchkReplayB->resize(80, 20);
+    TBchkReplayB->resize(100, 30);
     TBchkReplayB->setFont(*ft);
     TBchkReplayB->setText(tr("SRIO1"));
 //    TBchkReplayB->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBchkReplayB->setIcon(TBchkReplayBicon);
 //    TBchkReplayB->setIconSize(QSize(50, 50));
 //   TBchkReplayB->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBchkReplayB->move(30, 80);
+    TBchkReplayB->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(0);
     QIcon PBcjkTimeSelReplayicon;
     PBcjkTimeSelReplayicon.addFile(":/png/png/cross-128.png");
     PBcjkTimeSelReplay = new QPushButton(this);
@@ -408,85 +467,105 @@ replaymenu_init::replaymenu_init()
     //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
     PBcjkTimeSelReplay->setIcon(PBchkchnselreplayicon);
     PBcjkTimeSelReplay->setIconSize(QSize(30, 30));
-    PBcjkTimeSelReplay->move(195, 0);
+    PBcjkTimeSelReplay->move(start_pos);
 
+    start_pos.setY(60);
     LAstarttime = new QLabel(this);
     LAstarttime->setFont(*ft);
     LAstarttime->setText(tr("起始时间"));
-    LAstarttime->move(150, 55);
+    LAstarttime->move(start_pos);
 
+    start_pos.setY(100);
     LAendtime = new QLabel(this);
     LAendtime->setFont(*ft);
     LAendtime->setText(tr("结束时间"));
-    LAendtime->move(150, 95);
+    LAendtime->move(start_pos);
 
+    start_pos.setX(start_pos.x() + 60);
+    start_pos.setY(50);
     DTEstarttime = new QDateTimeEdit(this);
     DTEstarttime->setDateTime(QDateTime::currentDateTime());
+    DTEstarttime->setFont(*ft);
     DTEstarttime->resize(120, 30);
-    DTEstarttime->move(220, 45);
+    DTEstarttime->move(start_pos);
 
+    start_pos.setY(90);
     DTEendtime = new QDateTimeEdit(this);
     DTEendtime->setDateTime(QDateTime::currentDateTime());
+    DTEendtime->setFont(*ft);
     DTEendtime->resize(120, 30);
-    DTEendtime->move(220, 85);
+    DTEendtime->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance + 60);
+    start_pos.setY(0);
     QIcon PBchktypeSelReplayicon;
     PBchktypeSelReplayicon.addFile(":/png/png/cross-128.png");
     PBchktypeSelReplay = new QPushButton(this);
     PBchktypeSelReplay->setCheckable(true);
     PBchktypeSelReplay->setChecked(true);
-    PBchktypeSelReplay->resize(115, 40);
+    PBchktypeSelReplay->resize(125, 40);
     PBchktypeSelReplay->setFont(*ft);
     PBchktypeSelReplay->setText(tr("类型约束"));
     //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
     PBchktypeSelReplay->setIcon(PBchkchnselreplayicon);
     PBchktypeSelReplay->setIconSize(QSize(30, 30));
-    PBchktypeSelReplay->move(380, 0);
+    PBchktypeSelReplay->move(start_pos);
 
+    start_pos.setY(50);
     QIcon type1icon;
     type1icon.addFile(":/png/png/cross-128.png");
     PBtype1 = new QPushButton(this);
     PBtype1->setCheckable(true);
     PBtype1->setChecked(true);
-    PBtype1->resize(55, 30);
+    PBtype1->resize(60, 30);
     PBtype1->setText(tr("类型1"));
     PBtype1->setIcon(type1icon);
+    PBtype1->setFont(*ft);
 //    PBtype1->setIconSize(QSize(15, 15));
-    PBtype1->move(380, 45);
+    PBtype1->move(start_pos);
 
-    QIcon type2icon;
-    type2icon.addFile(":/png/png/cross-128.png");
-    PBtype2 = new QPushButton(this);
-    PBtype2->setCheckable(true);
-    PBtype2->setChecked(true);
-    PBtype2->resize(55, 30);
-    PBtype2->setText(tr("类型2"));
-    PBtype2->setIcon(type2icon);
-//    PBtype2->setIconSize(QSize(15, 15));
-    PBtype2->move(440, 45);
-
+    start_pos.setY(90);
     QIcon type3icon;
     type3icon.addFile(":/png/png/cross-128.png");
     PBtype3 = new QPushButton(this);
     PBtype3->setCheckable(true);
     PBtype3->setChecked(true);
-    PBtype3->resize(55, 30);
+    PBtype3->resize(60, 30);
     PBtype3->setText(tr("类型3"));
     PBtype3->setIcon(type3icon);
+    PBtype3->setFont(*ft);
 //    PBtype3->setIconSize(QSize(15, 15));
-    PBtype3->move(380, 90);
+    PBtype3->move(start_pos);
 
+    start_pos.setX(start_pos.x() + 65);
+    start_pos.setY(50);
+    QIcon type2icon;
+    type2icon.addFile(":/png/png/cross-128.png");
+    PBtype2 = new QPushButton(this);
+    PBtype2->setCheckable(true);
+    PBtype2->setChecked(true);
+    PBtype2->resize(60, 30);
+    PBtype2->setText(tr("类型2"));
+    PBtype2->setIcon(type2icon);
+    PBtype2->setFont(*ft);
+//    PBtype2->setIconSize(QSize(15, 15));
+    PBtype2->move(start_pos);
+
+    start_pos.setY(90);
     QIcon type4icon;
     type4icon.addFile(":/png/png/cross-128.png");
     PBtype4 = new QPushButton(this);
     PBtype4->setCheckable(true);
     PBtype4->setChecked(true);
-    PBtype4->resize(55, 30);
+    PBtype4->resize(60, 30);
     PBtype4->setText(tr("类型4"));
     PBtype4->setIcon(type4icon);
+    PBtype4->setFont(*ft);
 //    PBtype4->setIconSize(QSize(15, 15));
-    PBtype4->move(440, 90);
+    PBtype4->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(0);
     QIcon PBchkChanSelReplayicon;
     PBchkChanSelReplayicon.addFile(":/png/png/cross-128.png");
     PBchkChanSelReplay = new QPushButton(this);
@@ -497,17 +576,20 @@ replaymenu_init::replaymenu_init()
     PBchkChanSelReplay->setText(tr("输出端口"));
     PBchkChanSelReplay->setIcon(PBchkChanSelReplayicon);
 //    PBchkChanSelReplay->setIconSize(QSize(30, 30));
-    PBchkChanSelReplay->move(550, 0);
+    PBchkChanSelReplay->move(start_pos);
 
+    start_pos.setY(60);
     QStringList cbxoutcom_list;
     cbxoutcom_list << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9"\
                    <<"10" << "11" << "12" << "13" << "14";
     CBXoutcom = new QComboBox(this);
     CBXoutcom->addItems(cbxoutcom_list);
     CBXoutcom->setFont(*ft);
-    CBXoutcom->resize(100, 40);
-    CBXoutcom->move(550, 60);
+    CBXoutcom->resize(100, 35);
+    CBXoutcom->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(30);
     QIcon TBreplayicon;
     TBreplayicon.addFile(":/png/png/play-128.png");
     TBreplay = new QToolButton(this);
@@ -518,8 +600,9 @@ replaymenu_init::replaymenu_init()
     TBreplay->setIcon(TBreplayicon);
     TBreplay->setIconSize(QSize(50, 50));
     TBreplay->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBreplay->move(700, 40);
+    TBreplay->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
     QIcon TBpauseicon;
     TBpauseicon.addFile(":/png/png/pause-128.png");
     TBpause = new QToolButton(this);
@@ -531,8 +614,9 @@ replaymenu_init::replaymenu_init()
     TBpause->setIcon(TBpauseicon);
     TBpause->setIconSize(QSize(50, 50));
     TBpause->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBpause->move(800, 40);
+    TBpause->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
     QIcon TBstopicon;
     TBstopicon.addFile(":/png/png/stop-128.png");
     TBstop = new QToolButton(this);
@@ -543,7 +627,7 @@ replaymenu_init::replaymenu_init()
     TBstop->setIcon(TBstopicon);
     TBstop->setIconSize(QSize(50, 50));
     TBstop->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBstop->move(900, 40);
+    TBstop->move(start_pos);
     connect(this->PBchkchnselreplay, SIGNAL(clicked(bool)), this, SLOT(slot_emitchkchnselreplay()));
     connect(this->TBchkReplayA, SIGNAL(clicked(bool)), this, SLOT(slot_emitchkReplayA()));
     connect(this->TBchkReplayB, SIGNAL(clicked(bool)), this, SLOT(slot_emitchkReplayB()));
@@ -712,6 +796,11 @@ QToolButton *replaymenu_init::SetTbStop()
 
 selectmenu_init::selectmenu_init()
 {
+    QPoint start_pos;
+    start_pos.setX(40);
+    start_pos.setY(0);
+    int Xinter_distance = 180;
+
     QIcon PBchkchnselreplayicon;
     PBchkchnselreplayicon.addFile(":/png/png/cross-128.png");
     PBchkchnselreplay = new QPushButton(this);
@@ -723,34 +812,38 @@ selectmenu_init::selectmenu_init()
     //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
     PBchkchnselreplay->setIcon(PBchkchnselreplayicon);
     PBchkchnselreplay->setIconSize(QSize(30, 30));
-    PBchkchnselreplay->move(20,0);
+    PBchkchnselreplay->move(start_pos);
 
+    start_pos.setY(50);
     QIcon TBchkReplayAicon;
     TBchkReplayAicon.addFile(":/png/png/cross-128.png");
     TBchkReplayA = new QPushButton(this);
     TBchkReplayA->setCheckable(true);
-    TBchkReplayA->resize(80, 20);
+    TBchkReplayA->resize(100, 30);
     TBchkReplayA->setFont(*ft);
     TBchkReplayA->setText(tr("SRIO0"));
     //TBchkReplayA->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBchkReplayA->setIcon(TBchkReplayAicon);
     //TBchkReplayA->setIconSize(QSize(50, 50));
     //TBchkReplayA->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBchkReplayA->move(30, 40);
+    TBchkReplayA->move(start_pos);
 
+    start_pos.setY(90);
     QIcon TBchkReplayBicon;
     TBchkReplayBicon.addFile(":/png/png/cross-128.png");
     TBchkReplayB = new QPushButton(this);
     TBchkReplayB->setCheckable(true);
-    TBchkReplayB->resize(80, 20);
+    TBchkReplayB->resize(100, 30);
     TBchkReplayB->setFont(*ft);
     TBchkReplayB->setText(tr("SRIO1"));
     //TBchkReplayB->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBchkReplayB->setIcon(TBchkReplayBicon);
     //TBchkReplayB->setIconSize(QSize(50, 50));
     //TBchkReplayB->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBchkReplayB->move(30, 80);
+    TBchkReplayB->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(0);
     QIcon PBcjkTimeSelReplayicon;
     PBcjkTimeSelReplayicon.addFile(":/png/png/cross-128.png");
     PBcjkTimeSelReplay = new QPushButton(this);
@@ -762,28 +855,37 @@ selectmenu_init::selectmenu_init()
     //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
     PBcjkTimeSelReplay->setIcon(PBchkchnselreplayicon);
     PBcjkTimeSelReplay->setIconSize(QSize(30, 30));
-    PBcjkTimeSelReplay->move(250, 0);
+    PBcjkTimeSelReplay->move(start_pos);
 
+    start_pos.setY(60);
     LAstarttime = new QLabel(this);
     LAstarttime->setFont(*ft);
     LAstarttime->setText(tr("起始时间"));
-    LAstarttime->move(200, 55);
+    LAstarttime->move(start_pos);
 
+    start_pos.setY(100);
     LAendtime = new QLabel(this);
     LAendtime->setFont(*ft);
     LAendtime->setText(tr("结束时间"));
-    LAendtime->move(200, 95);
+    LAendtime->move(start_pos);
 
+    start_pos.setX(start_pos.x() + 60);
+    start_pos.setY(50);
     DTEstarttime = new QDateTimeEdit(this);
     DTEstarttime->setDateTime(QDateTime::currentDateTime());
+    DTEstarttime->setFont(*ft);
     DTEstarttime->resize(120, 30);
-    DTEstarttime->move(275, 45);
+    DTEstarttime->move(start_pos);
 
+    start_pos.setY(90);
     DTEendtime = new QDateTimeEdit(this);
     DTEendtime->setDateTime(QDateTime::currentDateTime());
+    DTEendtime->setFont(*ft);
     DTEendtime->resize(120, 30);
-    DTEendtime->move(275, 85);
+    DTEendtime->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance + 60);
+    start_pos.setY(0);
     QIcon PBchktypeSelReplayicon;
     PBchktypeSelReplayicon.addFile(":/icon/icon/ygg.png");
     PBchktypeSelReplay = new QPushButton(this);
@@ -795,8 +897,9 @@ selectmenu_init::selectmenu_init()
     //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
     PBchktypeSelReplay->setIcon(PBchkchnselreplayicon);
     PBchktypeSelReplay->setIconSize(QSize(30, 30));
-    PBchktypeSelReplay->move(490, 0);
+    PBchktypeSelReplay->move(start_pos);
 
+    start_pos.setY(50);
     QIcon type1icon;
     type1icon.addFile(":/png/png/cross-128.png");
     PBtype1 = new QPushButton(this);
@@ -804,19 +907,11 @@ selectmenu_init::selectmenu_init()
     PBtype1->resize(60, 30);
     PBtype1->setText(tr("类型1"));
     PBtype1->setIcon(type1icon);
+    PBtype1->setFont(*ft);
     PBtype1->setIconSize(QSize(15, 15));
-    PBtype1->move(490, 45);
+    PBtype1->move(start_pos);
 
-    QIcon type2icon;
-    type2icon.addFile(":/png/png/cross-128.png");
-    PBtype2 = new QPushButton(this);
-    PBtype2->setCheckable(true);
-    PBtype2->resize(60, 30);
-    PBtype2->setText(tr("类型2"));
-    PBtype2->setIcon(type2icon);
-    PBtype2->setIconSize(QSize(15, 15));
-    PBtype2->move(555, 45);
-
+    start_pos.setY(90);
     QIcon type3icon;
     type3icon.addFile(":/png/png/cross-128.png");
     PBtype3 = new QPushButton(this);
@@ -824,9 +919,24 @@ selectmenu_init::selectmenu_init()
     PBtype3->resize(60, 30);
     PBtype3->setText(tr("类型3"));
     PBtype3->setIcon(type3icon);
+    PBtype3->setFont(*ft);
     PBtype3->setIconSize(QSize(15, 15));
-    PBtype3->move(490, 90);
+    PBtype3->move(start_pos);
 
+    start_pos.setX(start_pos.x() + 65);
+    start_pos.setY(50);
+    QIcon type2icon;
+    type2icon.addFile(":/png/png/cross-128.png");
+    PBtype2 = new QPushButton(this);
+    PBtype2->setCheckable(true);
+    PBtype2->resize(60, 30);
+    PBtype2->setText(tr("类型2"));
+    PBtype2->setIcon(type2icon);
+    PBtype2->setFont(*ft);
+    PBtype2->setIconSize(QSize(15, 15));
+    PBtype2->move(start_pos);
+
+    start_pos.setY(90);
     QIcon type4icon;
     type4icon.addFile(":/png/png/cross-128.png");
     PBtype4 = new QPushButton(this);
@@ -834,9 +944,12 @@ selectmenu_init::selectmenu_init()
     PBtype4->resize(60, 30);
     PBtype4->setText(tr("类型4"));
     PBtype4->setIcon(type4icon);
+    PBtype4->setFont(*ft);
     PBtype4->setIconSize(QSize(15, 15));
-    PBtype4->move(555, 90);
+    PBtype4->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setY(30);
     QIcon TBdelfileicon;
     TBdelfileicon.addFile(":/png/png/Trash Empty.png");
     TBdelfile = new QToolButton(this);
@@ -847,8 +960,9 @@ selectmenu_init::selectmenu_init()
     TBdelfile->setIcon(TBdelfileicon);
     TBdelfile->setIconSize(QSize(50, 50));
     TBdelfile->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBdelfile->move(680, 20);
+    TBdelfile->move(start_pos);
 
+    start_pos.setX(start_pos.x() + Xinter_distance);
     QIcon TBsearchfileicon;
     TBsearchfileicon.addFile(":/png/png/opened_folder-128.png");
     TBsearchfile = new QToolButton(this);
@@ -859,7 +973,8 @@ selectmenu_init::selectmenu_init()
     TBsearchfile->setIcon(TBsearchfileicon);
     TBsearchfile->setIconSize(QSize(50, 50));
     TBsearchfile->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBsearchfile->move(800, 20);
+    TBsearchfile->move(start_pos);
+
     connect(this->PBchkchnselreplay, SIGNAL(clicked(bool)), this, SLOT(slot_emitchkchnselect()));
     connect(this->TBchkReplayA, SIGNAL(clicked(bool)), this, SLOT(slot_emitchkSelectA()));
     connect(this->TBchkReplayB, SIGNAL(clicked(bool)), this, SLOT(slot_emitchkSelectB()));
@@ -1043,7 +1158,7 @@ managemenu_init::managemenu_init()
     TBselfcheck->setIcon(TBselfcheckicon);
     TBselfcheck->setIconSize(QSize(50, 50));
     TBselfcheck->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBselfcheck->move(350, 10);
+    TBselfcheck->move(380, 10);
 
     connect(this->pTime, SIGNAL(timeout()), this, SLOT(slot_timesyncfunc()));
     pTime->start(1000);
@@ -1142,7 +1257,7 @@ usermenu_init::usermenu_init()
     TBmodifypsdw->setText(tr("修改密码"));
     TBmodifypsdw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBmodifypsdw->resize(85, 85);
-    TBmodifypsdw->move(320, 20);
+    TBmodifypsdw->move(400, 20);
 
     QIcon TBdeluserIcon;
     TBdeluserIcon.addFile(tr(":/png/png/deluser.png"));
@@ -1154,7 +1269,7 @@ usermenu_init::usermenu_init()
     TBdeluser->setText(tr("删除用户"));
     TBdeluser->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBdeluser->resize(85, 85);
-    TBdeluser->move(420, 20);
+    TBdeluser->move(580, 20);
 
     connect(this->TBcreatuser, SIGNAL(clicked(bool)), this, SLOT(slot_emitTBcreatusr()));
     connect(this->TBmodifypsdw, SIGNAL(clicked(bool)), this, SLOT(slot_emitTBmodifypswd()));
@@ -1212,20 +1327,23 @@ channelmenu_init::channelmenu_init()
     LAmdftunnel->setFont(*ft);
     LAmdftunnel->resize(300, 20);
     LAmdftunnel->setText(tr("修改通道名称（下次程序打开时生效）"));
-    LAmdftunnel->move(10, 20);
+    LAmdftunnel->move(40, 20);
 
     PBbacktodef = new QPushButton(this);
+    PBbacktodef->setFont(*ft);
     PBbacktodef->setText(tr("恢复默认"));
     PBbacktodef->move(320, 20);
 
     PBconfirm = new QPushButton(this);
+    PBconfirm->setFont(*ft);
     PBconfirm->setText(tr("确定"));
     PBconfirm->move(880, 20);
 
     TWchannel = new QTableWidget(this);
+    TWchannel->setFont(*ft);
     TWchannel->resize(950, 80);
     TWchannel->setStyleSheet("background-color:rgba(0,0,0,0)");
-    TWchannel->move(10, 45);
+    TWchannel->move(40, 45);
     connect(this->PBbacktodef, SIGNAL(clicked(bool)), this, SLOT(cmhandle_setchanneldefault()));
     connect(this->PBconfirm, SIGNAL(clicked(bool)), this, SLOT(cmhandle_confirm()));
 }
@@ -1286,7 +1404,7 @@ specfymenu_init::specfymenu_init()
     TBpoweroff->setIcon(TBpowerofficon);
     TBpoweroff->setIconSize(QSize(50, 50));
     TBpoweroff->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBpoweroff->move(280, 0);
+    TBpoweroff->move(300, 0);
 
     QIcon TBupdateicon;
     TBupdateicon.addFile(":/png/png/upload-128.png");
@@ -1298,7 +1416,7 @@ specfymenu_init::specfymenu_init()
     TBupdate->setIcon(TBupdateicon);
     TBupdate->setIconSize(QSize(50, 50));
     TBupdate->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBupdate->move(410, 0);
+    TBupdate->move(450, 0);
 
     QIcon TBsoftdistoryicon;
     TBsoftdistoryicon.addFile(":/png/png/burn.png");
@@ -1310,7 +1428,7 @@ specfymenu_init::specfymenu_init()
     TBsoftdistory->setIcon(TBsoftdistoryicon);
     TBsoftdistory->setIconSize(QSize(50, 50));
     TBsoftdistory->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    TBsoftdistory->move(540, 0);
+    TBsoftdistory->move(600, 0);
 
     LAnotice = new QLabel(this);
     LAnotice->setFont(*ft);
