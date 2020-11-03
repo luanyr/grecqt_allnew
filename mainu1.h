@@ -354,7 +354,6 @@ private slots:
     void WorkStatusSlot(QByteArray data);
     void MenuFileSlot();
     void CustomMenuRequested(QPoint);
-    void slot_CuTreeFileItemSelection();
 public slots:
     void slot_handlesignal(int type);
     void slot_closeapp();

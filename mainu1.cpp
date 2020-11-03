@@ -1908,8 +1908,3 @@ void MainU1::InsertTreeItem(CFileAttrib *pfileAttribSrc, INT32 nTier, QTreeWidge
         break;
     }
 }
-
-void MainU1::slot_CuTreeFileItemSelection()
-{
-
-}

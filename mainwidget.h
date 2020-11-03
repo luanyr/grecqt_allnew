@@ -19,6 +19,11 @@ private:
     Ui::MainWidget *ui;
     QTabWidget *TW_MainPage;
     MainU1 *mu;
+    void contextMenuEvent(QContextMenuEvent *event);
+    int count = 1;
+private slots:
+    void slot_addwidget();
+    void slot_closewidget();
 };
 
 #endif // MAINWIDGET_H

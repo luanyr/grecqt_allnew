@@ -70,7 +70,8 @@ FORMS    += mainwindow.ui \
     top_form.ui \
     contentui.ui \
     mainu1.ui \
-    mainwidget.ui
+    mainwidget.ui \
+    click_menu.ui
 
 RESOURCES += \
     icon.qrc
