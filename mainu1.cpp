@@ -20,20 +20,20 @@ MainU1::MainU1(QWidget *parent) :
     UiInit();
     connect(this->m_tcpclient, SIGNAL(connected()), this, SLOT(slot_havaconnected()));
     connect(this->m_tcpclient, SIGNAL(disconnected()), this, SLOT(slot_havedisconnected()));
+    connect(this->m_tcpclient, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
     connect(this, SIGNAL(UImsg(QString)), this, SLOT(slot_UIstatusshow(QString)));
-
+    connect(this, SIGNAL(AutoConnectSignal()),this,SLOT(connectserver()),Qt::QueuedConnection);
     connect(this, SIGNAL(HeartBeatSignal()), m_pThrdSend, SLOT(HeartBeatSlot()));
     connect(this, SIGNAL(SetTimeSignal(QDateTime)), m_pThrdSend, SLOT(SetTimeSlot(QDateTime)));
     connect(this, SIGNAL(MBitSignal()), m_pThrdSend, SLOT(BitSlot()));
+    connect(this, SIGNAL(Signal_InqStatus()), this->m_pThrdSend, SLOT(InqStatusSlot()));
     connect(this, SIGNAL(WipeSignal()), m_pThrdSend, SLOT(WipeSlot()));
     connect(this, SIGNAL(Signal_Usrlogout()), this->m_pThrdSend, SLOT(UserQuitSlot()));
     connect(this, SIGNAL(Signal_Usrlogin(QString, QString)), this->m_pThrdSend, SLOT(UserLoginSlot(QString,QString)));
     connect(this, SIGNAL(UserNewSignal(QString, QString)), m_pThrdSend, SLOT(UserNewSlot(QString, QString)));
     connect(this, SIGNAL(UserChgPwSignal(QString, QString)), m_pThrdSend, SLOT(UserChgPwSlot(QString, QString)));
     connect(this, SIGNAL(UserDelSignal(QString, QString)), m_pThrdSend, SLOT(UserDelSlot(QString, QString)));
-     connect(this, SIGNAL(RecConSignal(UINT32)), m_pThrdSend, SLOT(RecConSlot(UINT32)));
-    connect(this, SIGNAL(Signal_InqStatus()), this->m_pThrdSend, SLOT(InqStatusSlot()));
-    connect(this, SIGNAL(Signal_Heartbeat()), this->m_pThrdSend, SLOT(HeartBeatSlot()));
+    connect(this, SIGNAL(RecConSignal(UINT32)), m_pThrdSend, SLOT(RecConSlot(UINT32)));
     connect(this, SIGNAL(RecModeSignal(UINT32)), m_pThrdSend, SLOT(RecModeSlot(UINT32)));
     connect(this, SIGNAL(WriteProtectSignal(QVariant)), m_pThrdSend, SLOT(WriteProtectSlot(QVariant)));
     connect(this, SIGNAL(WriteProtectOffSignal(QVariant)), m_pThrdSend, SLOT(WriteProtectOffSlot(QVariant)));
@@ -58,9 +58,17 @@ MainU1::MainU1(QWidget *parent) :
     connect(this->m_pThrdRecv, SIGNAL(RecvMsgToui(QString)),this,SLOT(slot_UIstatusshow(QString)));
     connect(this->m_pThrdRecv, SIGNAL(AllAckSignal(QByteArray)),this,SLOT(AllAckSlot(QByteArray)));
     connect(this->m_pThrdRecv, SIGNAL(AllCmdUiSignal(QByteArray, QByteArray)), this, SLOT(AllCmdUiSlot(QByteArray, QByteArray)));
+    connect(this->m_pThrdRecv, SIGNAL(AllCmdSendSignal(QByteArray, QByteArray)), this->m_pThrdSend, SLOT(AllCmdSendSlot(QByteArray, QByteArray)));
+    connect(this->m_pThrdRecv, SIGNAL(SetSysBizTypeSignal(QByteArray)), this->m_pThrdSend, SLOT(SetSysBizTypeSlot(QByteArray)));
+    connect(this->m_pThrdRecv, SIGNAL(RecvProcessToui(bool,UINT32)),this,SLOT(UpdateProgressSlot(bool,UINT32)));
+    connect(this->m_pThrdSend, SIGNAL(SendProcessToui(bool,UINT32)),this,SLOT(UpdateProgressSlot(bool,UINT32)));
+    connect(this->m_pThrdRecv, SIGNAL(UserOperSignal(QByteArray)), this, SLOT(UserOperSlot(QByteArray)));
     connect(this->m_pThrdRecv, SIGNAL(BitSignal(QByteArray)), this, SLOT(BitSlot(QByteArray)));
     connect(this->m_pThrdRecv, SIGNAL(WipeSignal(QByteArray)), this, SLOT(WipeSlot(QByteArray)));
     connect(this->m_pThrdSend, SIGNAL(SendMsgToui(QString)), this, SLOT(slot_UIstatusshow(QString)));
+    connect(this->m_pThrdSend, SIGNAL(SendProcessToui(bool,UINT32)),this,SLOT(UpdateProgressSlot(bool,UINT32)));
+    connect(this->m_pThrdRecv, SIGNAL(WorkStatusSignal(QByteArray)), this, SLOT(WorkStatusSlot(QByteArray)));
+
     connect(this->tf, SIGNAL(signals_pbtype(int)), this, SLOT(slot_handlesignal(int)));
     connect(this->tf, SIGNAL(signals_cmtype(int)), this, SLOT(slot_handlecmsignals(int)));
     connect(this->tf, SIGNAL(signals_rcdmtype(int)), this, SLOT(slot_handlercdmsignal(int)));
@@ -1140,6 +1148,19 @@ void MainU1::FilePageInit()
 
 }
 
+void MainU1::UserOperSlot(QByteArray data)
+{
+    RW_MSGR__USR_LOGIN *pMsg = (RW_MSGR__USR_LOGIN *)data.data();
+    if(pMsg->result == 0)
+    {
+        emit UImsg(tr("操作用户成功。"));
+    }
+    else
+    {
+        emit UImsg(tr("操作用户失败。"));
+    }
+}
+
 void MainU1::CustomMenuRequested(QPoint pos)
 {
     if(m_pMenu == NULL)
@@ -1469,7 +1490,7 @@ void MainU1::slot_spmsoftdistory()
     this->tf->SetSpmSoftdistory()->setEnabled(false);
     emit SelfDestorySignal();
     m_bLogined = false;
-    //uiChgToolEnable(false);
+    uiChgToolEnable(false);
     Mysleep(5000);
 }
 
@@ -1767,8 +1788,7 @@ void MainU1::WorkStatusSlot(QByteArray data)
             uiChgToolEnable(true);
          }
      }
-     QString strWorkStatus = tr("工作状态: ") + sz;
-     m_labelStatUser->setText(strWorkStatus);
+     this->tf->CuStatusWork(sz);
 }
 
 void MainU1::uiChgToolEnable(bool bEnable)

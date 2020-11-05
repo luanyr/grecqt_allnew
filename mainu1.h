@@ -244,7 +244,7 @@ private:
     void uiChgToolEnable(bool bEnable);
     void uiChgBizEnable(bool bEnable);
     void FunInIdleEnable(bool bEnable);
-    void TimerHeartBeatFunction();
+
     void ChartUpdate(int idx, double dblUsed, double dblUsable);
     void StatusChartInit();
     void InsertTreeItem(CFileAttrib *pfileAttribSrc, INT32 nTier, QTreeWidgetItem *pParent);
@@ -263,7 +263,6 @@ signals:
     void Signal_Usrlogout();
     void Signal_statnet(int);
     void Signal_InqStatus();
-    void Signal_Heartbeat();
     void SetfileszSignal(UINT32 uPU);
     void RecConSignal(UINT32 uCon);
     void RecModeSignal(UINT32 uRecMode);
@@ -296,8 +295,9 @@ signals:
     void ReportSignal();
     void SetCurVecSignal(double dblLon, double dblLat, double dblDir);
     void MenuActionSignal(UINT32 uCmdTm, QStringList listFile);
-
+    void AutoConnectSignal();
 private slots:
+    void TimerHeartBeatFunction();
     void slot_havaconnected();
     void slot_havedisconnected();
     void slot_UIstatusshow(QString msg);
@@ -354,6 +354,7 @@ private slots:
     void WorkStatusSlot(QByteArray data);
     void MenuFileSlot();
     void CustomMenuRequested(QPoint);
+    void UserOperSlot(QByteArray data);
 public slots:
     void slot_handlesignal(int type);
     void slot_closeapp();

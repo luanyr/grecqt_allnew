@@ -182,6 +182,20 @@ void ContentUI::Statususr_Change(QString usrname, int loginstatus)
     }
 }
 
+void ContentUI::Statuswork_Change(QString workstatus)
+{
+    if(!workstatus.isEmpty())
+    {
+        if(workstatus.contains("空闲"))
+            LAstatwork->setText(tr("工作状态: 空闲"));
+        else if(workstatus.contains("记录"))
+            LAstatwork->setText(tr("工作状态: 记录"));
+        else if(workstatus.contains("回放"))
+            LAstatwork->setText(tr("工作状态: 回放"));
+        else if(workstatus.contains("格式化"))
+            LAstatwork->setText(tr("工作状态: 格式化"));
+    }
+}
 QTableWidget* ContentUI::SetTLWDevSta()
 {
     return this->TLW_DevStatus;

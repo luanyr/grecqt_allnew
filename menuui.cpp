@@ -104,6 +104,7 @@ startmenu_init::startmenu_init()
     LEpswd = new QLineEdit(this);
     LEpswd->resize(120, 30);
     LEpswd->setFont(*ft);
+    LEpswd->setEchoMode(QLineEdit::Password);
     LEpswd->move(start_pos);
 
     start_pos.setX(start_pos.x() + Xinter_distance + 20);
@@ -1233,6 +1234,7 @@ usermenu_init::usermenu_init()
 
     LEuserpwsd = new QLineEdit(this);
     LEuserpwsd->resize(100, 20);
+    LEuserpwsd->setEchoMode(QLineEdit::Password);
     LEuserpwsd->move(80, 75);
 
     QIcon TBcreatuserIcon;

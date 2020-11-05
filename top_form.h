@@ -22,6 +22,7 @@ public:
     QString Getuserpswd();
     void CuStatusNet(int);
     void CuStatusUsr(QString, int);
+    void CuStatusWork(QString);
     QTableWidget *setchannel();
     QTableWidget *SetTlwDevSta();
     QListWidget *SetLwListBit();

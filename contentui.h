@@ -17,8 +17,9 @@ public:
     ~ContentUI();
     void ListShowStatus(QString msg);
     void Statusnet_Change(int);
-    void Statuswork_Change();
+    void Statuswork_Change(const QString);
     void Statususr_Change(QString, int);
+
     QTableWidget* SetTLWDevSta();
     QListWidget *SetLWListBit();
     QTableWidget* SetTableFile();

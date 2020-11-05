@@ -379,6 +379,11 @@ void Top_Form::CuStatusUsr(QString usrname, int status)
     this->cu->Statususr_Change(usrname, status);
 }
 
+void Top_Form::CuStatusWork(QString workstatus)
+{
+    this->cu->Statuswork_Change(workstatus);
+}
+
 QToolButton *Top_Form::SetSmConnect()
 {
     return this->sm->SetTbConnect();

@@ -37,18 +37,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
     recvthread.cpp \
     sendthread.cpp \
     qchartviewer.cpp \
-    mainui.cpp \
     menuui.cpp \
     top_form.cpp \
     contentui.cpp \
     mainu1.cpp \
     mainwidget.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     recvthread.h \
     sendthread.h \
     myhelper.h \
@@ -56,7 +54,6 @@ HEADERS  += mainwindow.h \
     rw29.h \
     spark_def.h \
     qchartviewer.h \
-    mainui.h \
     menuui.h \
     headers.h \
     top_form.h \
