@@ -243,7 +243,8 @@ private:
     void uiChgToolEnable(bool bEnable);
     void uiChgBizEnable(bool bEnable);
     void FunInIdleEnable(bool bEnable);
-
+    void SelectFilterSave();
+    void ReplayFilterSave();
     void ChartUpdate(int idx, double dblUsed, double dblUsable);
     void StatusChartInit();
     void InsertTreeItem(CFileAttrib *pfileAttribSrc, INT32 nTier, QTreeWidgetItem *pParent);
@@ -351,7 +352,6 @@ private slots:
     void BitSlot(QByteArray);
     void WipeSlot(QByteArray data);
     void WorkStatusSlot(QByteArray data);
-    void MenuFileSlot();
     void CustomMenuRequested(QPoint);
     void UserOperSlot(QByteArray data);
 public slots:
@@ -365,6 +365,7 @@ public slots:
     void slot_handleumsignals(int);
     void slot_handlespmsignals(int);
     void slot_handlecusignals(int);
+    void MenuFileSlot();
     //void slot_handlerpmsignal(int);
 };
 

@@ -51,6 +51,7 @@ MainU1::MainU1(QWidget *parent) :
     connect(this, SIGNAL(UnmountSignal(bool)), m_pThrdSend, SLOT(UnmountSlot(bool)));
     connect(this, SIGNAL(MountSignal(bool)), m_pThrdSend, SLOT(MountSlot(bool)));
     connect(this, SIGNAL(SetfileszSignal(UINT32)), m_pThrdSend, SLOT(SetfileSzSlot(UINT32)));
+    connect(this, SIGNAL(MenuActionSignal(UINT32, QStringList)), m_pThrdSend, SLOT(MenuActionSlot(UINT32, QStringList)));
 
     connect(this->m_pThrdRecv, SIGNAL(DirSignal(QList<CFileAttrib>)), this, SLOT(DirSlot(QList<CFileAttrib>)), Qt::DirectConnection);
     connect(this->m_pThrdRecv, SIGNAL(UserLoginSignal(QByteArray)), this, SLOT(slot_userlogin(QByteArray)));
@@ -69,6 +70,8 @@ MainU1::MainU1(QWidget *parent) :
     connect(this->m_pThrdSend, SIGNAL(SendProcessToui(bool,UINT32)),this,SLOT(UpdateProgressSlot(bool,UINT32)));
     connect(this->m_pThrdRecv, SIGNAL(WorkStatusSignal(QByteArray)), this, SLOT(WorkStatusSlot(QByteArray)));
 
+
+
     connect(this->tf, SIGNAL(signals_pbtype(int)), this, SLOT(slot_handlesignal(int)));
     connect(this->tf, SIGNAL(signals_cmtype(int)), this, SLOT(slot_handlecmsignals(int)));
     connect(this->tf, SIGNAL(signals_rcdmtype(int)), this, SLOT(slot_handlercdmsignal(int)));
@@ -80,10 +83,21 @@ MainU1::MainU1(QWidget *parent) :
     connect(this->tf, SIGNAL(signals_cutype(int)), this, SLOT(slot_handlecusignals(int)));
 
 
+    emit AutoConnectSignal();
 }
 
 MainU1::~MainU1()
 {
+    m_infoStore.m_uRecCon = 0;
+    for(int i=0; i<m_listChkRec.count(); i++)
+    {
+        if(m_listChkRec.at(i)->isChecked()) m_infoStore.m_uRecCon |= 1<<i;
+    }
+    SelectFilterSave();
+    ReplayFilterSave();
+    m_pThrdSend->quit();
+    m_pThrdRecv->stop();
+    m_pThrdRecv->quit();
     delete ui;
 }
 
@@ -1163,6 +1177,7 @@ void MainU1::UserOperSlot(QByteArray data)
 
 void MainU1::CustomMenuRequested(QPoint pos)
 {
+
     if(m_pMenu == NULL)
     {
         m_pMenu = new QMenu(this);
@@ -1198,16 +1213,15 @@ void MainU1::CustomMenuRequested(QPoint pos)
         actionRefresh->setIcon(QIcon(":/png/png/sinchronize-128.png"));
         actionRefresh->setData(QVariant::fromValue(TMCMD_DIR));
         m_pMenu->addAction(actionRefresh);
-        m_pMenu->move(cursor().pos());
-        m_pMenu->show();
-        connect (actionPlay, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
-        connect (actionDel, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
-        connect (actionWpOn, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
-        connect (actionWpOff, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+
+        connect (actionPlay,    SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+        connect (actionDel,     SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+        connect (actionWpOn,    SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+        connect (actionWpOff,   SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
         connect (actionRefresh, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
     }
-
-    //m_pMenu->exec(this->tf->SetCuTableFile()->viewport()->mapFromGlobal(pos));
+    //m_pMenu->exec(QCursor::pos());
+    m_pMenu->exec(this->tf->SetCuTableFile()->viewport()->mapToGlobal(pos));
 }
 
 void MainU1::MenuFileSlot()
@@ -1384,6 +1398,43 @@ QVariant MainU1::ReadLimitSelect()
     QVariant a;
     a.setValue(filter);
     return a;
+}
+
+void MainU1::ReplayFilterSave()
+{
+    m_infoStore.m_filterReplay.uValid = 0;
+    if(this->tf->SetSlcmChnSelect()->isChecked()) m_infoStore.m_filterReplay.uValid |= FIELD__CHAN;
+    m_infoStore.m_filterReplay.uChannel = 0;
+    for(int i=0; i<m_listChkReplay.count(); i++)
+        if(m_listChkReplay.at(i)->isChecked()) m_infoStore.m_filterReplay.uChannel |= (1<<i);
+
+    if(this->tf->SetSlcmTimeSelect()->isChecked()) m_infoStore.m_filterReplay.uValid |= FIELD__TIME_BEGIN | FIELD__TIME_END;
+    m_infoStore.m_filterReplay.timeBeg = this->tf->SetSlcmStartTime()->dateTime();
+    m_infoStore.m_filterReplay.timeEnd = this->tf->SetSlcmEndTime()->dateTime();
+    if(this->tf->SetSlcmTypeSelect()->isChecked()) m_infoStore.m_filterReplay.uValid |= FIELD__DATA_TYPE | FIELD__DATA_TYPE;
+    m_infoStore.m_filterReplay.uRange = 0;
+    for(int i=0; i<m_listChkTypeReplay.count(); i++)
+        if(m_listChkTypeReplay.at(i)->isChecked()) m_infoStore.m_filterReplay.uRange |= (1<<i);
+}
+
+void MainU1::SelectFilterSave()
+{
+    m_infoStore.m_filterSelect.uValid = 0;
+    if(this->tf->SetSlcmChnSelect()->isChecked()) m_infoStore.m_filterSelect.uValid |= FIELD__CHAN;
+    m_infoStore.m_filterSelect.uChannel = 0;
+    for(int i=0; i<m_listChkSelect.count(); i++)
+        if(m_listChkSelect.at(i)->isChecked()) m_infoStore.m_filterSelect.uChannel |= (1<<i);
+
+    if(this->tf->SetSlcmTimeSelect()->isChecked()) m_infoStore.m_filterSelect.uValid |= FIELD__TIME_BEGIN | FIELD__TIME_END;
+    m_infoStore.m_filterSelect.timeBeg = this->tf->SetSlcmStartTime()->dateTime();
+    m_infoStore.m_filterSelect.timeEnd = this->tf->SetSlcmEndTime()->dateTime();
+    m_infoStore.m_filterSelect.uValid |= FIELD__DATA_TYPE | FIELD__DATA_TYPE;
+    m_infoStore.m_filterSelect.uRange = 0;
+    m_infoStore.m_filterSelect.uRange |= (1<<0);
+    if(this->tf->SetSlcmTypeSelect()->isChecked()) m_infoStore.m_filterSelect.uValid |= FIELD__DATA_TYPE | FIELD__DATA_TYPE;
+    m_infoStore.m_filterSelect.uRange = 0;
+    for(int i=0; i<m_listChkTypeSelect.count(); i++)
+        if(m_listChkTypeSelect.at(i)->isChecked()) m_infoStore.m_filterSelect.uRange |= (1<<i);
 }
 
 void MainU1::slot_slcmdeletefile()

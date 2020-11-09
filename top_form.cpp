@@ -27,11 +27,11 @@ Top_Form::~Top_Form()
 
 void Top_Form::Startmenu_Init()
 {
-    ft.setPixelSize(12);
+    ft.setPixelSize(16);
     menulist << tr("开始") << tr("记录") << tr("回放") << tr("筛选") << tr("管理")\
              << tr("用户") <<tr("通道") << tr("特殊");
     CBXmenu = new QComboBox(this);
-    CBXmenu->resize(100, 20);
+    CBXmenu->resize(100, 30);
     CBXmenu->setFont(ft);
     CBXmenu->addItems(menulist);
     CBXmenu->move(10,40);

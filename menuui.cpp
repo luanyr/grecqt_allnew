@@ -9,7 +9,7 @@ MenuUI::MenuUI(QWidget *parent) :
     QRect deskRect = QApplication::desktop()->availableGeometry();
     this->resize(deskRect.width(), deskRect.height()/4);
     ft = new QFont();
-    ft->setPixelSize(14);
+    ft->setPixelSize(16);
 }
 
 MenuUI::~MenuUI()
@@ -39,20 +39,20 @@ startmenu_init::startmenu_init()
     LAport->setFont(*ft);
     LAport->move(start_pos);
 
-    start_pos.setX(start_pos.x() + Xinter_distance);
+    start_pos.setX(start_pos.x() + Xinter_distance-20);
     start_pos.setY(Yinter_distance0);
     LEipaddr = new QLineEdit(this);
-    LEipaddr->resize(120, 30);
+    LEipaddr->resize(130, 30);
     LEipaddr->move(start_pos);
     LEipaddr->setFont(*ft);
 
     start_pos.setY(Yinter_distance1);
     LEport = new QLineEdit(this);
-    LEport->resize(120, 30);
+    LEport->resize(130, 30);
     LEport->move(start_pos);
     LEport->setFont(*ft);
 
-    start_pos.setX(start_pos.x() + Xinter_distance + 20);
+    start_pos.setX(start_pos.x() + Xinter_distance + 40);
     start_pos.setY(Yinter_distance0);
     QIcon TBconnecticon;
     TBconnecticon.addFile(tr(":/png/png/connected-128.png"));
@@ -107,7 +107,7 @@ startmenu_init::startmenu_init()
     LEpswd->setEchoMode(QLineEdit::Password);
     LEpswd->move(start_pos);
 
-    start_pos.setX(start_pos.x() + Xinter_distance + 20);
+    start_pos.setX(start_pos.x() + Xinter_distance + 40);
     start_pos.setY(Yinter_distance0);
     QIcon TBloginicon;
     TBloginicon.addFile(tr(":/png/png/user.png"));
@@ -482,13 +482,14 @@ replaymenu_init::replaymenu_init()
     LAendtime->setText(tr("结束时间"));
     LAendtime->move(start_pos);
 
-    start_pos.setX(start_pos.x() + 60);
+    start_pos.setX(start_pos.x() + 80);
     start_pos.setY(50);
     DTEstarttime = new QDateTimeEdit(this);
     DTEstarttime->setDateTime(QDateTime::currentDateTime());
     DTEstarttime->setFont(*ft);
     DTEstarttime->resize(120, 30);
     DTEstarttime->move(start_pos);
+
 
     start_pos.setY(90);
     DTEendtime = new QDateTimeEdit(this);
@@ -512,6 +513,8 @@ replaymenu_init::replaymenu_init()
     PBchktypeSelReplay->setIconSize(QSize(30, 30));
     PBchktypeSelReplay->move(start_pos);
 
+    QFont typeft;
+    typeft.setPixelSize(13);
     start_pos.setY(50);
     QIcon type1icon;
     type1icon.addFile(":/png/png/cross-128.png");
@@ -521,7 +524,7 @@ replaymenu_init::replaymenu_init()
     PBtype1->resize(60, 30);
     PBtype1->setText(tr("类型1"));
     PBtype1->setIcon(type1icon);
-    PBtype1->setFont(*ft);
+    PBtype1->setFont(typeft);
 //    PBtype1->setIconSize(QSize(15, 15));
     PBtype1->move(start_pos);
 
@@ -534,7 +537,7 @@ replaymenu_init::replaymenu_init()
     PBtype3->resize(60, 30);
     PBtype3->setText(tr("类型3"));
     PBtype3->setIcon(type3icon);
-    PBtype3->setFont(*ft);
+    PBtype3->setFont(typeft);
 //    PBtype3->setIconSize(QSize(15, 15));
     PBtype3->move(start_pos);
 
@@ -548,7 +551,7 @@ replaymenu_init::replaymenu_init()
     PBtype2->resize(60, 30);
     PBtype2->setText(tr("类型2"));
     PBtype2->setIcon(type2icon);
-    PBtype2->setFont(*ft);
+    PBtype2->setFont(typeft);
 //    PBtype2->setIconSize(QSize(15, 15));
     PBtype2->move(start_pos);
 
@@ -561,7 +564,7 @@ replaymenu_init::replaymenu_init()
     PBtype4->resize(60, 30);
     PBtype4->setText(tr("类型4"));
     PBtype4->setIcon(type4icon);
-    PBtype4->setFont(*ft);
+    PBtype4->setFont(typeft);
 //    PBtype4->setIconSize(QSize(15, 15));
     PBtype4->move(start_pos);
 
@@ -870,7 +873,7 @@ selectmenu_init::selectmenu_init()
     LAendtime->setText(tr("结束时间"));
     LAendtime->move(start_pos);
 
-    start_pos.setX(start_pos.x() + 60);
+    start_pos.setX(start_pos.x() + 80);
     start_pos.setY(50);
     DTEstarttime = new QDateTimeEdit(this);
     DTEstarttime->setDateTime(QDateTime::currentDateTime());
@@ -900,6 +903,8 @@ selectmenu_init::selectmenu_init()
     PBchktypeSelReplay->setIconSize(QSize(30, 30));
     PBchktypeSelReplay->move(start_pos);
 
+    QFont typeft;
+    typeft.setPixelSize(13);
     start_pos.setY(50);
     QIcon type1icon;
     type1icon.addFile(":/png/png/cross-128.png");
@@ -908,7 +913,7 @@ selectmenu_init::selectmenu_init()
     PBtype1->resize(60, 30);
     PBtype1->setText(tr("类型1"));
     PBtype1->setIcon(type1icon);
-    PBtype1->setFont(*ft);
+    PBtype1->setFont(typeft);
     PBtype1->setIconSize(QSize(15, 15));
     PBtype1->move(start_pos);
 
@@ -920,7 +925,7 @@ selectmenu_init::selectmenu_init()
     PBtype3->resize(60, 30);
     PBtype3->setText(tr("类型3"));
     PBtype3->setIcon(type3icon);
-    PBtype3->setFont(*ft);
+    PBtype3->setFont(typeft);
     PBtype3->setIconSize(QSize(15, 15));
     PBtype3->move(start_pos);
 
@@ -933,7 +938,7 @@ selectmenu_init::selectmenu_init()
     PBtype2->resize(60, 30);
     PBtype2->setText(tr("类型2"));
     PBtype2->setIcon(type2icon);
-    PBtype2->setFont(*ft);
+    PBtype2->setFont(typeft);
     PBtype2->setIconSize(QSize(15, 15));
     PBtype2->move(start_pos);
 
@@ -945,7 +950,7 @@ selectmenu_init::selectmenu_init()
     PBtype4->resize(60, 30);
     PBtype4->setText(tr("类型4"));
     PBtype4->setIcon(type4icon);
-    PBtype4->setFont(*ft);
+    PBtype4->setFont(typeft);
     PBtype4->setIconSize(QSize(15, 15));
     PBtype4->move(start_pos);
 
