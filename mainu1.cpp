@@ -219,7 +219,7 @@ void MainU1::slot_handlesignal(int type)
 
 void MainU1::userlogin()
 {
-    if(!m_loginstatus)
+    if(m_bLogined)
     {
         emit UImsg(tr("警告：必须退出当前用户才能重新登录！"));
         return;
@@ -1176,36 +1176,38 @@ void MainU1::CustomMenuRequested(QPoint pos)
 
         m_pMenu->addSeparator();
         QAction* actionDel = new QAction(tr("删除文件(&D)"), this);
-          actionDel->setIcon(QIcon(":/png/png/Trash Empty.png"));
-          actionDel->setData(QVariant::fromValue(TMCMD_DEL));
-          m_pMenu->addAction(actionDel);
+        actionDel->setIcon(QIcon(":/png/png/Trash Empty.png"));
+        actionDel->setData(QVariant::fromValue(TMCMD_DEL));
+        m_pMenu->addAction(actionDel);
 
-          m_pMenu->addSeparator();
+        m_pMenu->addSeparator();
 
-          QAction* actionWpOn = new QAction(tr("打开写保护(&W)"), this);
-          actionWpOn->setIcon(QIcon(":/png/png/lock-128.png"));
-          actionWpOn->setData(QVariant::fromValue(TMCMD_WPON));
-          m_pMenu->addAction(actionWpOn);
+        QAction* actionWpOn = new QAction(tr("打开写保护(&W)"), this);
+        actionWpOn->setIcon(QIcon(":/png/png/lock-128.png"));
+        actionWpOn->setData(QVariant::fromValue(TMCMD_WPON));
+        m_pMenu->addAction(actionWpOn);
 
-          QAction* actionWpOff = new QAction(tr("关闭写保护(&Q)"), this);
-          actionWpOff->setIcon(QIcon(":/png/png/unlock-128.png"));
-          actionWpOff->setData(QVariant::fromValue(TMCMD_WPOFF));
-          m_pMenu->addAction(actionWpOff);
+        QAction* actionWpOff = new QAction(tr("关闭写保护(&Q)"), this);
+        actionWpOff->setIcon(QIcon(":/png/png/unlock-128.png"));
+        actionWpOff->setData(QVariant::fromValue(TMCMD_WPOFF));
+        m_pMenu->addAction(actionWpOff);
 
-          m_pMenu->addSeparator();
+        m_pMenu->addSeparator();
 
-          QAction* actionRefresh = new QAction(tr("刷新(&R)"), this);
-          actionRefresh->setIcon(QIcon(":/png/png/sinchronize-128.png"));
-          actionRefresh->setData(QVariant::fromValue(TMCMD_DIR));
-          m_pMenu->addAction(actionRefresh);
-
-          connect (actionPlay, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
-          connect (actionDel, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
-          connect (actionWpOn, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
-          connect (actionWpOff, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
-          connect (actionRefresh, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+        QAction* actionRefresh = new QAction(tr("刷新(&R)"), this);
+        actionRefresh->setIcon(QIcon(":/png/png/sinchronize-128.png"));
+        actionRefresh->setData(QVariant::fromValue(TMCMD_DIR));
+        m_pMenu->addAction(actionRefresh);
+        m_pMenu->move(cursor().pos());
+        m_pMenu->show();
+        connect (actionPlay, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+        connect (actionDel, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+        connect (actionWpOn, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+        connect (actionWpOff, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
+        connect (actionRefresh, SIGNAL(triggered()), this, SLOT(MenuFileSlot()));
     }
-    m_pMenu->exec(this->tf->SetCuTableFile()->viewport()->mapFromGlobal(pos));
+
+    //m_pMenu->exec(this->tf->SetCuTableFile()->viewport()->mapFromGlobal(pos));
 }
 
 void MainU1::MenuFileSlot()
@@ -1367,7 +1369,7 @@ QVariant MainU1::ReadLimitSelect()
             filter.uChannel |= 1<<(i);
     }
 
-    if(this->tf->SetSlcmChnSelect()->isChecked()) filter.uValid |= FIELD__TIME_BEGIN | FIELD__TIME_END;
+    if(this->tf->SetSlcmTimeSelect()->isChecked()) filter.uValid |= FIELD__TIME_BEGIN | FIELD__TIME_END;
     filter.timeBeg = this->tf->SetSlcmStartTime()->dateTime();
     filter.timeEnd = this->tf->SetSlcmEndTime()->dateTime();
 
@@ -1779,7 +1781,7 @@ void MainU1::WorkStatusSlot(QByteArray data)
      }
      if(sz.isEmpty())
      {
-         sz = tr("空闲");
+         sz = tr("空闲1");
          FunInIdleEnable(true);
          uiChgBizEnable(true);
          if(bFormatting)

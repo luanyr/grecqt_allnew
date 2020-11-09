@@ -198,7 +198,6 @@ private:
     UINT32 m_uRetry;
     QMutex m_mutexFile;
     BOOL m_connectstatus;
-    BOOL m_loginstatus;
     BOOL m_bLogined;
     BOOL m_bNeedRecMode;
     BOOL m_bManual;
