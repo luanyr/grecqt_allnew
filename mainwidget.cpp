@@ -1,7 +1,7 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 #include "headers.h"
-#define WINDOW_TITLE "存储设备管理软件_J991_V1.0_201104"
+#define WINDOW_TITLE "存储设备管理软件_J991_V1.0_201110"
 MainWidget::MainWidget(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWidget)

@@ -223,9 +223,9 @@ private:
     QChartViewer *m_chartViewers[noOfChartViewers];
     void UiInit();
     void addwidget();
-    void connectserver();
+
     void disconnectserver();
-    void displayError();
+
     void userlogin();
     void userlogout();
     void UpdateChannelName();
@@ -345,6 +345,8 @@ private slots:
     void slot_spmsoftdistory();
     void slot_cutrwitemselectionchange();
     void slot_cupbbitsmall();
+    void connectserver();
+    void displayError(QAbstractSocket::SocketError);
     void AllAckSlot(QByteArray head);
     void AllCmdUiSlot(QByteArray, QByteArray);
     void UpdateProgressSlot(bool bShow, UINT32 percent=0);

@@ -253,7 +253,7 @@ recordmenu_init::recordmenu_init()
     LEfilesz = new QLineEdit(this);
     LEfilesz->resize(90, 30);
     LEfilesz->move(start_pos);
-    LEfilesz->setEnabled(false);
+    LEfilesz->setEnabled(true);
 
     start_pos.setX(start_pos.x() + Xinter_distance);
     CBfilesz = new QComboBox(this);
@@ -283,13 +283,10 @@ recordmenu_init::recordmenu_init()
     TBchkRec_AIcon.addFile(tr(":/png/png/cross-128.png"));
     TBchkRec_A = new QPushButton(this);
     TBchkRec_A->setCheckable(true);
-    //TBchkRec_A->setChecked(true);
+    TBchkRec_A->setChecked(false);
     TBchkRec_A->setFont(*ft);
     TBchkRec_A->setIcon(TBchkRec_AIcon);
-    //TBchkRec_A->setIconSize(QSize(50, 50));
-    //TBchkRec_A->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBchkRec_A->setText(tr("SRIO0"));
-    //TBchkRec_A->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBchkRec_A->resize(80, 30);
     TBchkRec_A->move(start_pos);
 
@@ -298,13 +295,10 @@ recordmenu_init::recordmenu_init()
     TBchkRec_BIcon.addFile(tr(":/png/png/cross-128.png"));
     TBchkRec_B = new QPushButton(this);
     TBchkRec_B->setCheckable(true);
-    //TBchkRec_B->setChecked(true);
+    TBchkRec_B->setChecked(false);
     TBchkRec_B->setFont(*ft);
-    TBchkRec_B->setIcon(TBchkRec_AIcon);
-    //TBchkRec_B->setIconSize(QSize(50, 50));
-    //TBchkRec_B->setStyleSheet("background-color:rgba(0,0,0,0)");
+    TBchkRec_B->setIcon(TBchkRec_BIcon);
     TBchkRec_B->setText(tr("SRIO1"));
-    //TBchkRec_B->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBchkRec_B->resize(80, 30);
     TBchkRec_B->move(start_pos);
 
@@ -417,12 +411,12 @@ replaymenu_init::replaymenu_init()
     PBchkchnselreplayicon.addFile(":/png/png/cross-128.png");
     PBchkchnselreplay = new QPushButton(this);
     PBchkchnselreplay->setCheckable(true);
-    PBchkchnselreplay->setChecked(true);
+    PBchkchnselreplay->setChecked(false);
     PBchkchnselreplay->resize(100, 40);
     PBchkchnselreplay->setFont(*ft);
     PBchkchnselreplay->setText(tr("通道约束"));
-    //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
     PBchkchnselreplay->setIcon(PBchkchnselreplayicon);
+    PBchkchnselreplay->setIconSize(QSize(30, 30));
     PBchkchnselreplay->move(start_pos);
 
     start_pos.setY(50);
@@ -430,14 +424,10 @@ replaymenu_init::replaymenu_init()
     TBchkReplayAicon.addFile(":/png/png/cross-128.png");
     TBchkReplayA = new QPushButton(this);
     TBchkReplayA->setCheckable(true);
-    TBchkReplayA->setChecked(true);
     TBchkReplayA->resize(100, 30);
     TBchkReplayA->setFont(*ft);
     TBchkReplayA->setText(tr("SRIO0"));
-//  TBchkReplayA->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBchkReplayA->setIcon(TBchkReplayAicon);
-//    TBchkReplayA->setIconSize(QSize(50, 50));
-//    TBchkReplayA->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBchkReplayA->move(start_pos);
 
     start_pos.setY(90);
@@ -445,14 +435,11 @@ replaymenu_init::replaymenu_init()
     TBchkReplayBicon.addFile(":/png/png/cross-128.png");
     TBchkReplayB = new QPushButton(this);
     TBchkReplayB->setCheckable(true);
-    TBchkReplayB->setChecked(true);
+    TBchkReplayB->setChecked(false);
     TBchkReplayB->resize(100, 30);
     TBchkReplayB->setFont(*ft);
     TBchkReplayB->setText(tr("SRIO1"));
-//    TBchkReplayB->setStyleSheet("background-color:rgba(0,0,0,0)");
     TBchkReplayB->setIcon(TBchkReplayBicon);
-//    TBchkReplayB->setIconSize(QSize(50, 50));
-//   TBchkReplayB->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     TBchkReplayB->move(start_pos);
 
     start_pos.setX(start_pos.x() + Xinter_distance);
@@ -461,12 +448,11 @@ replaymenu_init::replaymenu_init()
     PBcjkTimeSelReplayicon.addFile(":/png/png/cross-128.png");
     PBcjkTimeSelReplay = new QPushButton(this);
     PBcjkTimeSelReplay->setCheckable(true);
-    PBcjkTimeSelReplay->setChecked(true);
+    PBcjkTimeSelReplay->setChecked(false);
     PBcjkTimeSelReplay->resize(100, 40);
     PBcjkTimeSelReplay->setFont(*ft);
     PBcjkTimeSelReplay->setText(tr("时间约束"));
-    //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
-    PBcjkTimeSelReplay->setIcon(PBchkchnselreplayicon);
+    PBcjkTimeSelReplay->setIcon(PBcjkTimeSelReplayicon);
     PBcjkTimeSelReplay->setIconSize(QSize(30, 30));
     PBcjkTimeSelReplay->move(start_pos);
 
@@ -504,7 +490,7 @@ replaymenu_init::replaymenu_init()
     PBchktypeSelReplayicon.addFile(":/png/png/cross-128.png");
     PBchktypeSelReplay = new QPushButton(this);
     PBchktypeSelReplay->setCheckable(true);
-    PBchktypeSelReplay->setChecked(true);
+    PBchktypeSelReplay->setChecked(false);
     PBchktypeSelReplay->resize(125, 40);
     PBchktypeSelReplay->setFont(*ft);
     PBchktypeSelReplay->setText(tr("类型约束"));
@@ -520,7 +506,7 @@ replaymenu_init::replaymenu_init()
     type1icon.addFile(":/png/png/cross-128.png");
     PBtype1 = new QPushButton(this);
     PBtype1->setCheckable(true);
-    PBtype1->setChecked(true);
+    PBtype1->setChecked(false);
     PBtype1->resize(60, 30);
     PBtype1->setText(tr("类型1"));
     PBtype1->setIcon(type1icon);
@@ -533,12 +519,11 @@ replaymenu_init::replaymenu_init()
     type3icon.addFile(":/png/png/cross-128.png");
     PBtype3 = new QPushButton(this);
     PBtype3->setCheckable(true);
-    PBtype3->setChecked(true);
+    PBtype3->setChecked(false);
     PBtype3->resize(60, 30);
     PBtype3->setText(tr("类型3"));
     PBtype3->setIcon(type3icon);
     PBtype3->setFont(typeft);
-//    PBtype3->setIconSize(QSize(15, 15));
     PBtype3->move(start_pos);
 
     start_pos.setX(start_pos.x() + 65);
@@ -547,12 +532,11 @@ replaymenu_init::replaymenu_init()
     type2icon.addFile(":/png/png/cross-128.png");
     PBtype2 = new QPushButton(this);
     PBtype2->setCheckable(true);
-    PBtype2->setChecked(true);
+    PBtype2->setChecked(false);
     PBtype2->resize(60, 30);
     PBtype2->setText(tr("类型2"));
     PBtype2->setIcon(type2icon);
     PBtype2->setFont(typeft);
-//    PBtype2->setIconSize(QSize(15, 15));
     PBtype2->move(start_pos);
 
     start_pos.setY(90);
@@ -560,7 +544,7 @@ replaymenu_init::replaymenu_init()
     type4icon.addFile(":/png/png/cross-128.png");
     PBtype4 = new QPushButton(this);
     PBtype4->setCheckable(true);
-    PBtype4->setChecked(true);
+    PBtype4->setChecked(false);
     PBtype4->resize(60, 30);
     PBtype4->setText(tr("类型4"));
     PBtype4->setIcon(type4icon);
@@ -571,7 +555,7 @@ replaymenu_init::replaymenu_init()
     start_pos.setX(start_pos.x() + Xinter_distance);
     start_pos.setY(0);
     QIcon PBchkChanSelReplayicon;
-    PBchkChanSelReplayicon.addFile(":/png/png/cross-128.png");
+    PBchkChanSelReplayicon.addFile(":/png/png/checkmark-128.png");
     PBchkChanSelReplay = new QPushButton(this);
     PBchkChanSelReplay->setCheckable(true);
     PBchkChanSelReplay->setChecked(true);
@@ -579,7 +563,7 @@ replaymenu_init::replaymenu_init()
     PBchkChanSelReplay->setFont(*ft);
     PBchkChanSelReplay->setText(tr("输出端口"));
     PBchkChanSelReplay->setIcon(PBchkChanSelReplayicon);
-//    PBchkChanSelReplay->setIconSize(QSize(30, 30));
+    PBchkChanSelReplay->setIconSize(QSize(30, 30));
     PBchkChanSelReplay->move(start_pos);
 
     start_pos.setY(60);
@@ -809,7 +793,7 @@ selectmenu_init::selectmenu_init()
     PBchkchnselreplayicon.addFile(":/png/png/cross-128.png");
     PBchkchnselreplay = new QPushButton(this);
     PBchkchnselreplay->setCheckable(true);
-    PBchkchnselreplay->setChecked(true);
+    PBchkchnselreplay->setChecked(false);
     PBchkchnselreplay->resize(100, 40);
     PBchkchnselreplay->setFont(*ft);
     PBchkchnselreplay->setText(tr("通道约束"));
@@ -852,12 +836,11 @@ selectmenu_init::selectmenu_init()
     PBcjkTimeSelReplayicon.addFile(":/png/png/cross-128.png");
     PBcjkTimeSelReplay = new QPushButton(this);
     PBcjkTimeSelReplay->setCheckable(true);
-    PBcjkTimeSelReplay->setChecked(true);
+    PBcjkTimeSelReplay->setChecked(false);
     PBcjkTimeSelReplay->resize(100, 40);
     PBcjkTimeSelReplay->setFont(*ft);
     PBcjkTimeSelReplay->setText(tr("时间约束"));
-    //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
-    PBcjkTimeSelReplay->setIcon(PBchkchnselreplayicon);
+    PBcjkTimeSelReplay->setIcon(PBcjkTimeSelReplayicon);
     PBcjkTimeSelReplay->setIconSize(QSize(30, 30));
     PBcjkTimeSelReplay->move(start_pos);
 
@@ -891,15 +874,15 @@ selectmenu_init::selectmenu_init()
     start_pos.setX(start_pos.x() + Xinter_distance + 60);
     start_pos.setY(0);
     QIcon PBchktypeSelReplayicon;
-    PBchktypeSelReplayicon.addFile(":/icon/icon/ygg.png");
+    PBchktypeSelReplayicon.addFile(":/png/png/cross-128.png");
     PBchktypeSelReplay = new QPushButton(this);
     PBchktypeSelReplay->setCheckable(true);
-    PBchktypeSelReplay->setChecked(true);
+    PBchktypeSelReplay->setChecked(false);
     PBchktypeSelReplay->resize(125, 40);
     PBchktypeSelReplay->setFont(*ft);
     PBchktypeSelReplay->setText(tr("类型约束"));
     //PBchkchnselreplay->setStyleSheet("background-color:rgba(0,0,0,0)");
-    PBchktypeSelReplay->setIcon(PBchkchnselreplayicon);
+    PBchktypeSelReplay->setIcon(PBchktypeSelReplayicon);
     PBchktypeSelReplay->setIconSize(QSize(30, 30));
     PBchktypeSelReplay->move(start_pos);
 
@@ -1132,6 +1115,8 @@ managemenu_init::managemenu_init()
     PBsync = new QPushButton(this);
     PBsync->setFont(*ft);
     PBsync->resize(60, 30);
+    PBsync->setCheckable(true);
+    PBsync->setChecked(true);
     PBsync->setText(tr("同步"));
     PBsync->setIcon(PBsyncicon);
     PBsync->setIconSize(QSize(20, 20));
@@ -1305,7 +1290,7 @@ QToolButton* usermenu_init::SetCreatUsr()
 
 QToolButton* usermenu_init::SetModifyPswd()
 {
-    return this->TBdeluser;
+    return this->TBmodifypsdw;
 }
 
 QToolButton* usermenu_init::SetDelUsr()

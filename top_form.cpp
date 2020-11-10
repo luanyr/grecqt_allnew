@@ -737,3 +737,8 @@ void Top_Form::slot_cuhandlesignal(int type)
  {
      return this->cu->SetChart();
  }
+
+ QStatusBar* Top_Form::SetCuStatusBar()
+ {
+     return this->cu->SetStatusBar();
+ }

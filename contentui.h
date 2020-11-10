@@ -29,6 +29,7 @@ public:
     QProgressBar *SetProgress();
     QTabWidget *SetDevStaCap();
     QVBoxLayout *SetChart();
+    QStatusBar *SetStatusBar();
 private:
     Ui::ContentUI *ui;
     QFont *ft;

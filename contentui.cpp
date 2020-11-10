@@ -106,14 +106,15 @@ void ContentUI::StatusbarInit()
     statusBar->move(5, deskRect.height()- 300);
 
     PB_statnet = new QPushButton;
-    //PB_statnet->setMinimumSize(PB_statnet->sizeHint());
+    PB_statnet->setMinimumSize(PB_statnet->sizeHint());
     PB_statnet->setToolTip(tr("显示与设备的连接状态"));
-    QFont font("宋体",8,QFont::Bold);
+    QFont font("宋体",10,QFont::Bold);
     PB_statnet->setFont(font);
     PB_statnet->setIcon(QIcon(":/ico/icon/dead.ico"));
     PB_statnet->setText(tr("未连接"));
     PB_statnet->resize(QSize(40,40));
-    statusBar->addWidget(PB_statnet);
+    PB_statnet->setStyleSheet("background-color: rgb(0, 255, 0, 0);");
+    statusBar->addWidget(PB_statnet);   
 
     QFrame *separator1 = new QFrame;
     separator1->setFrameShape(QFrame::VLine);
@@ -122,6 +123,7 @@ void ContentUI::StatusbarInit()
     LAstatusr = new QLabel;
     LAstatusr->setMinimumSize(LAstatusr->sizeHint());
     LAstatusr->setAlignment(Qt::AlignLeft);
+    LAstatusr->setFont(font);
     LAstatusr->setText(tr("当前用户:         "));
     statusBar->addWidget(LAstatusr);
 
@@ -132,7 +134,8 @@ void ContentUI::StatusbarInit()
     LAstatwork = new QLabel;
     LAstatwork->setMinimumSize(LAstatwork->sizeHint());
     LAstatwork->setAlignment(Qt::AlignLeft);
-    LAstatwork->setText(tr("工作状态: 空闲"));
+    LAstatwork->setFont(font);
+    LAstatwork->setText(tr("工作状态: 空闲       "));
     statusBar->addWidget(LAstatwork);
 
     QFrame *separator3 = new QFrame;
@@ -186,14 +189,7 @@ void ContentUI::Statuswork_Change(const QString workstatus)
 {
     if(!workstatus.isEmpty())
     {
-        if(workstatus.contains(tr("空闲")))
-            LAstatwork->setText(tr("工作状态: 空闲"));
-        else if(workstatus.contains(tr("记录")))
-            LAstatwork->setText(tr("工作状态: 记录"));
-        else if(workstatus.contains(tr("回放")))
-            LAstatwork->setText(tr("工作状态: 回放"));
-        else if(workstatus.contains(tr("格式化")))
-            LAstatwork->setText(tr("工作状态: 格式化"));
+        LAstatwork->setText(workstatus);
     }
 }
 QTableWidget* ContentUI::SetTLWDevSta()
@@ -249,4 +245,9 @@ QTabWidget *ContentUI::SetDevStaCap()
 QVBoxLayout* ContentUI::SetChart()
 {
     return this->VBLChart;
+}
+
+QStatusBar* ContentUI::SetStatusBar()
+{
+    return this->statusBar;
 }

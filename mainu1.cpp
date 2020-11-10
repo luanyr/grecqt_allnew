@@ -183,8 +183,6 @@ void MainU1::connectserver()
     {
         m_infoStore.m_uPort = this->tf->Getipport().toUInt(0, 10);
         m_infoStore.m_szIP = this->tf->Getipaddr().toLatin1();
-        qDebug() << m_infoStore.m_uPort;
-        qDebug() << m_infoStore.m_szIP;
         m_tcpclient->connectToHost(m_infoStore.m_szIP,m_infoStore.m_uPort);
         emit UImsg(tr("正在连接")+m_infoStore.m_szIP+tr(":")+QString::number(m_infoStore.m_uPort,10)+tr("..."));
     }
@@ -197,10 +195,10 @@ void MainU1::disconnectserver()
         m_tcpclient->disconnectFromHost();
 }
 
-void MainU1::displayError()
+void MainU1::displayError(QAbstractSocket::SocketError)
 {
     emit UImsg(tr("网络错误原因：") + m_tcpclient->errorString());
-    emit UImsg(tr("TCP连接失败,正在重试")+QString::number(m_uRetry,10)+tr("次"));
+    emit UImsg(tr("TCP连接失败,正在重试"));
     Mysleep(5000);
     connectserver();
 }
@@ -462,7 +460,7 @@ void MainU1::RecPageInit()
 
     for(int i = 0; i < m_listChkRec.count(); i++)
     {
-        m_listChkRec.at(i)->setChecked((m_infoStore.m_uRecCon&(1<<i)) != 0);
+        //m_listChkRec.at(i)->setChecked((m_infoStore.m_uRecCon&(1<<i)) != 0);
         m_listChkRec.at(i)->setToolTip(m_ListStrChannel.at(i));
     }
 }
@@ -478,6 +476,8 @@ void MainU1::ReplayPageInit()
         m_listChkReplay.at(i)->setChecked((m_infoStore.m_filterReplay.uChannel&(1<<i)) != 0);
         m_listChkReplay.at(i)->setToolTip(m_ListStrChannel.at(i));
     }
+    rpmchkReplayA();
+    rpmchkReplayB();
     this->tf->SetRpmchktimesetreplay()->setChecked((m_infoStore.m_filterReplay.uValid&FIELD__TIME_BEGIN) == FIELD__TIME_BEGIN);
     rpmchkTimeSelReplay();
     this->tf->SetRpmStartTime()->setDateTime(m_infoStore.m_filterReplay.timeBeg);
@@ -486,6 +486,10 @@ void MainU1::ReplayPageInit()
     for(int i = 0; i < m_listChkTypeReplay.count(); i++)
         m_listChkTypeReplay.at(i)->setChecked((m_infoStore.m_filterReplay.uRange&(1<<i)) != 0);
     rpmchkChanSelReplay();
+    rpmtype1();
+    rpmtype2();
+    rpmtype3();
+    rpmtype4();
 }
 
 void MainU1::slot_handlerpmsignals(int type)
@@ -888,14 +892,13 @@ void MainU1::AllCmdUiSlot(QByteArray head, QByteArray data)
 
 void MainU1::rpmchkChnSelReplay()
 {
+    QIcon PBchkchnselreplayicon;
     bool bChecked = this->tf->SetRpmChkchnselreplay()->isChecked();
     if(bChecked)
     {
-        QIcon PBchkchnselreplayicon;
         PBchkchnselreplayicon.addFile(":/png/png/checkmark-128.png");
         this->tf->SetRpmChkchnselreplay()->setIcon(PBchkchnselreplayicon);
     } else {
-        QIcon PBchkchnselreplayicon;
         PBchkchnselreplayicon.addFile(":/png/png/cross-128.png");
         this->tf->SetRpmChkchnselreplay()->setIcon(PBchkchnselreplayicon);
     }
@@ -907,20 +910,47 @@ void MainU1::rpmchkChnSelReplay()
 
 void MainU1::rpmchkChanSelReplay()
 {
+    QIcon PBchkChanSelReplay;
     bool bChecked = this->tf->SetRpmchkchansetreplay()->isChecked();
+    if(bChecked)
+    {
+        PBchkChanSelReplay.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmchkchansetreplay()->setIcon(PBchkChanSelReplay);
+    } else {
+        PBchkChanSelReplay.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmchkchansetreplay()->setIcon(PBchkChanSelReplay);
+    }
     this->tf->SetRpmOutCom()->setEnabled(bChecked);
 }
 
 void MainU1::rpmchkTimeSelReplay()
 {
+    QIcon icon;
     bool bChecked = this->tf->SetRpmchktimesetreplay()->isChecked();
+    if(bChecked)
+    {
+        icon.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmchktimesetreplay()->setIcon(icon);
+    } else {
+        icon.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmchktimesetreplay()->setIcon(icon);
+    }
     this->tf->SetRpmStartTime()->setEnabled(bChecked);
     this->tf->SetRpmEndTime()->setEnabled(bChecked);
 }
 
 void MainU1::rpmchkTypeSelReplay()
 {
+    QIcon icon;
     bool bChecked  = this->tf->SetRpmchktypesetreplay()->isChecked();
+    if(bChecked)
+    {
+        icon.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetRpmchktypesetreplay()->setIcon(icon);
+    } else {
+        icon.addFile(":/png/png/cross-128.png");
+        this->tf->SetRpmchktypesetreplay()->setIcon(icon);
+    }
     for(INT32 i = 0; i < m_listChkTypeReplay.count(); i++)
     {
         m_listChkTypeReplay.at(i)->setEnabled(bChecked);
@@ -1120,6 +1150,8 @@ void MainU1::SelectPageInit()
         m_listChkSelect.at(i)->setChecked((m_infoStore.m_filterSelect.uChannel&(1<<i)) != 0);
         m_listChkSelect.at(i)->setToolTip(m_ListStrChannel.at(i));
     }
+    slot_slcmSelectA();
+    slot_slcmSelectB();
     this->tf->SetSlcmTimeSelect()->setChecked((m_infoStore.m_filterSelect.uValid&FIELD__TIME_BEGIN) == FIELD__TIME_BEGIN);
     slot_slcmChkTimeSelSelect();
     this->tf->SetSlcmStartTime()->setDateTime(m_infoStore.m_filterSelect.timeBeg);
@@ -1127,6 +1159,10 @@ void MainU1::SelectPageInit()
     slot_slcmChkTypeSelSelect();
     for(int i = 0; i< m_listChkTypeSelect.count(); i++)
         m_listChkTypeSelect.at(i)->setChecked((m_infoStore.m_filterSelect.uRange&(1<<i)) != 0);
+    slot_slcmType1();
+    slot_slcmType2();
+    slot_slcmType3();
+    slot_slcmType4();
 }
 
 void MainU1::FilePageInit()
@@ -1266,7 +1302,17 @@ void MainU1::slot_slcmChkchnSelSelect()
 
 void MainU1:: slot_slcmChkTimeSelSelect()
 {
+    QIcon icon;
     bool bChecked = this->tf->SetSlcmTimeSelect()->isChecked();
+    if(bChecked)
+    {
+        icon.addFile(":/png/png/checkmark-128.png");
+        this->tf->SetSlcmTimeSelect()->setIcon(icon);
+    } else {
+
+        icon.addFile(":/png/png/cross-128.png");
+        this->tf->SetSlcmTimeSelect()->setIcon(icon);
+    }
     this->tf->SetSlcmStartTime()->setEnabled(bChecked);
     this->tf->SetSlcmEndTime()->setEnabled(bChecked);
 }
@@ -1832,7 +1878,7 @@ void MainU1::WorkStatusSlot(QByteArray data)
      }
      if(sz.isEmpty())
      {
-         sz = tr("空闲1");
+         sz = tr("空闲");
          FunInIdleEnable(true);
          uiChgBizEnable(true);
          if(bFormatting)

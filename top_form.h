@@ -91,6 +91,7 @@ public:
     QProgressBar *SetCuProgress();
     QTabWidget *SetCuDevStaCap();
     QVBoxLayout *SetCuChart();
+    QStatusBar *SetCuStatusBar();
 private:
     Ui::Top_Form *ui;
     startmenu_init      *sm;
